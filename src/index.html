@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="sv">
+<head>
+<meta charset="utf-8">
+<script>
+  // Topplista: Supabase om båda är ifyllda (publishable-nyckeln är publik). Tomma = lokal topplista på enheten.
+  window.HAJ_CONFIG = { supabaseUrl: "https://aqavtcswlcfxrybplodl.supabase.co", supabaseAnonKey: "sb_publishable_ANyAUc0ywa2fdw4kqcj7Gg_v4P3Vqv8" };
+</script>
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<meta name="theme-color" content="#031A33">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<title>Alvins Hajjakt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --deep:#031A33; --mid:#06305A; --light:#0A4A80;
+  --text:#EAF4FF; --muted:#9DB8D6;
+  --accent:#3CE0B4; --accent-ink:#022A22;
+  --danger:#FF5A5F; --gold:#FFC83D;
+  --surface:rgba(255,255,255,0.07); --surface2:rgba(255,255,255,0.1); --line:rgba(255,255,255,0.12);
+  --head:"Space Grotesk",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --body:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+  --sat:env(safe-area-inset-top,0px); --sab:env(safe-area-inset-bottom,0px);
+  --sal:env(safe-area-inset-left,0px); --sar:env(safe-area-inset-right,0px);
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--deep);color:var(--text);font-family:var(--body);
+  -webkit-user-select:none;user-select:none;-webkit-touch-callout:none;overscroll-behavior:none}
+button{font:inherit;color:inherit;border:0;background:none;cursor:pointer;padding:0}
+input{font:inherit;-webkit-user-select:text;user-select:text}
+svg{display:block}
+#game{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+#safe-probe{position:fixed;top:0;left:0;width:0;padding-top:var(--sat);visibility:hidden;pointer-events:none}
+
+.screen{position:fixed;inset:0;display:none;z-index:5}
+.screen.active{display:flex}
+.menu{background:linear-gradient(180deg,rgba(3,26,51,.62),rgba(3,26,51,.86));overflow-y:auto;-webkit-overflow-scrolling:touch;
+  touch-action:pan-y;padding:calc(18px + var(--sat)) calc(18px + var(--sar)) calc(18px + var(--sab)) calc(18px + var(--sal))}
+.menu-inner{margin:auto;width:100%;max-width:440px;display:flex;flex-direction:column;gap:14px}
+h1,h2,h3{font-family:var(--head);margin:0;letter-spacing:.01em}
+.logo{font-family:var(--head);font-weight:700;font-size:44px;line-height:1;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
+.logo span{color:var(--accent)}
+.logo svg{width:44px;height:44px;flex:none}
+.logo-txt small{display:block;font-size:15px;letter-spacing:.32em;color:var(--muted);font-weight:600;margin-bottom:4px}
+.tag{color:var(--muted);margin:2px 0 6px;font-size:15px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
+label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--text)}
+.input{width:100%;height:52px;border-radius:14px;border:1.5px solid var(--line);background:rgba(0,0,0,.22);color:var(--text);
+  padding:0 16px;font-size:18px;font-weight:600;outline:none;transition:border-color .15s}
+.input:focus{border-color:var(--accent)}
+.input.bad{border-color:var(--danger)}
+.hint{color:var(--muted);font-size:13px;margin:6px 2px 0}
+.err{color:var(--danger);font-size:14px;font-weight:600;margin:6px 2px 0;min-height:0}
+.err:empty{display:none}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:16px;padding:0 22px;font-weight:700;font-size:17px;
+  font-family:var(--head);letter-spacing:.02em;transition:transform .08s,filter .15s;width:100%}
+.btn:active{transform:scale(.97)}
+.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 8px 24px rgba(60,224,180,.25)}
+.btn.secondary{background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.btn.small{min-height:44px;font-size:15px;border-radius:14px}
+.btn-row{display:flex;gap:10px}
+.link{color:var(--accent);font-weight:600;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
+.icon-btn{width:44px;height:44px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.icon-btn svg{width:22px;height:22px}
+.corner{position:absolute;top:calc(12px + var(--sat));right:calc(12px + var(--sar));z-index:2}
+.topbar{display:flex;align-items:center;gap:12px}
+.topbar h2{font-size:22px;flex:1}
+.local-note{color:var(--muted);font-size:12px;margin:8px 0 0}
+.small-h{font-size:13px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);font-family:var(--head);font-weight:600;margin-bottom:8px}
+
+/* topplistor */
+.rows{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:6px}
+.row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:14px;background:rgba(255,255,255,.04);min-height:46px}
+.row.me{background:rgba(60,224,180,.16);outline:1.5px solid rgba(60,224,180,.6)}
+.row .pos{width:30px;text-align:center;font-family:var(--head);font-weight:700;color:var(--muted);flex:none}
+.badge{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#2a1a00;margin:auto}
+.b1{background:linear-gradient(135deg,#FFE08A,#FFC83D)}.b2{background:linear-gradient(135deg,#F1F5FA,#B9C6D6)}.b3{background:linear-gradient(135deg,#F2B98A,#C9814B)}
+.row img{width:36px;height:24px;object-fit:contain;flex:none}
+.row .nick{flex:1;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .lvl{color:var(--muted);font-size:13px;flex:none}
+.row .pts{font-family:var(--head);font-weight:700;flex:none;min-width:58px;text-align:right}
+.empty{color:var(--muted);font-size:14px;padding:10px 4px}
+.tabs{display:flex;background:rgba(0,0,0,.25);border-radius:14px;padding:4px;gap:4px}
+.tab{flex:1;min-height:40px;border-radius:11px;font-weight:600;color:var(--muted);font-size:15px}
+.tab.on{background:var(--surface2);color:var(--text)}
+
+/* start i liggande */
+.start-grid{max-width:440px}
+.start-grid>.col{display:flex;flex-direction:column;gap:12px}
+@media (orientation:landscape) and (max-height:560px){
+  .start-grid{max-width:780px;flex-direction:row;align-items:stretch;gap:18px}
+  .start-grid>.col{flex:1;min-width:0;display:flex;flex-direction:column;gap:10px;justify-content:center}
+  .logo{font-size:36px}
+}
+
+/* välj fisk */
+.fish-layout{display:flex;flex-direction:column;gap:14px;max-width:520px}
+.preview{position:relative;height:170px;border-radius:22px;background:radial-gradient(ellipse at 50% 40%,rgba(10,74,128,.9),rgba(6,48,90,.5));border:1px solid var(--line);overflow:hidden}
+.preview canvas{position:absolute;inset:0;width:100%;height:100%}
+.preview .pname{position:absolute;left:16px;right:16px;bottom:12px;font-family:var(--head);font-weight:700;font-size:22px}
+.preview .pname small{display:block;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
+.preview .pname small:empty{display:none}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.fcell{position:relative;border-radius:16px;background:var(--surface);border:1.5px solid transparent;padding:8px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:84px}
+.fcell img{width:64px;height:40px;object-fit:contain}
+.fcell .fn{font-size:13px;font-weight:600}
+.fcell.sel{border-color:var(--accent);background:rgba(60,224,180,.12)}
+.fcell.locked img{opacity:.28;filter:grayscale(1)}
+.fcell.locked .fn{color:var(--muted)}
+.fcell .lock{position:absolute;top:8px;right:8px;width:16px;height:16px;opacity:.85}
+.fcell .cond{font-size:11px;color:var(--muted);line-height:1.1;text-align:center}
+@media (orientation:landscape) and (max-height:560px){
+  .fish-layout{max-width:820px;display:grid;grid-template-columns:minmax(220px,1fr) 1.35fr;grid-template-rows:auto 1fr auto;gap:12px 16px}
+  .fish-layout .topbar{grid-column:1 / -1}
+  .fish-layout .preview{height:auto;min-height:150px}
+  .fish-layout .grid{grid-column:2;grid-row:2 / 4;grid-template-columns:repeat(4,1fr)}
+  .fish-layout .gobtn{grid-column:1;grid-row:3}
+}
+
+/* spel-HUD */
+#s-game{z-index:4;pointer-events:none}
+#s-game>*{pointer-events:auto}
+.hud{position:absolute;left:0;right:0;top:0;height:calc(54px + var(--sat));padding:var(--sat) calc(10px + var(--sar)) 0 calc(10px + var(--sal));
+  display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(3,26,51,.92),rgba(3,26,51,.55) 70%,rgba(3,26,51,0));pointer-events:none}
+.hud .lvlbox{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 0}
+.pill{align-self:flex-start;font-family:var(--head);font-weight:700;font-size:12px;letter-spacing:.08em;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
+.prog{display:flex;align-items:center;gap:8px;max-width:240px}
+.bar{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:6px}
+.prog span{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.hud .score{font-family:var(--head);font-weight:700;font-size:28px;font-variant-numeric:tabular-nums;text-align:center;flex:0 0 auto;min-width:90px;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.hud .right{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex:1 1 0}
+.chip{display:flex;align-items:center;gap:5px;font-weight:700;font-size:14px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip svg{width:16px;height:16px}
+.pu{position:relative}
+.pu b{font-weight:700}
+.hud .pause{pointer-events:auto}
+.shark-ind{position:absolute;left:calc(10px + var(--sal));top:calc(60px + var(--sat));display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;
+  padding:5px 10px;border-radius:999px;background:rgba(3,26,51,.55);pointer-events:none;font-variant-numeric:tabular-nums}
+.shark-ind i{width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px var(--danger)}
+.shark-ind.near{color:#FFD0D1;background:rgba(120,10,20,.55)}
+.shark-ind.near i{animation:blink .5s infinite}
+@keyframes blink{50%{opacity:.25}}
+.streak{position:absolute;top:calc(60px + var(--sat));left:50%;transform:translateX(-50%);font-family:var(--head);font-weight:700;color:var(--gold);font-size:14px;
+  padding:4px 10px;border-radius:999px;background:rgba(3,26,51,.5);pointer-events:none}
+.streak:empty{display:none}
+.ctl{position:absolute;bottom:calc(16px + var(--sab));width:96px;height:96px;border-radius:50%;background:rgba(255,255,255,.14);border:2px solid rgba(255,255,255,.28);
+  display:flex;align-items:center;justify-content:center;touch-action:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:background .08s,transform .08s}
+.ctl svg{width:44px;height:44px}
+.ctl.on{background:rgba(60,224,180,.35);border-color:rgba(60,224,180,.8);transform:scale(.95)}
+#s-game.eaten .ctl,#s-game.eaten .shark-ind,#s-game.eaten .streak{opacity:0;pointer-events:none;transition:opacity .3s}
+#btn-up{left:calc(18px + var(--sal))}
+#btn-down{right:calc(18px + var(--sar))}
+
+/* overlays */
+.ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:10;background:rgba(3,26,51,.72);overflow-y:auto;
+  padding:calc(14px + var(--sat)) calc(14px + var(--sar)) calc(14px + var(--sab)) calc(14px + var(--sal))}
+.ov.show{display:flex}
+.panel{background:linear-gradient(180deg,rgba(10,74,128,.55),rgba(6,48,90,.75));border:1px solid var(--line);border-radius:22px;padding:18px;width:100%;max-width:440px;
+  display:flex;flex-direction:column;gap:12px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.panel h2{font-size:26px;text-align:center}
+.sub{color:var(--muted);text-align:center;margin:-6px 0 0}
+.stars{display:flex;justify-content:center;gap:10px}
+.stars svg{width:42px;height:42px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.stat{background:var(--surface);border-radius:14px;padding:8px 6px;text-align:center}
+.stat small{display:block;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
+.stat b{font-family:var(--head);font-size:18px}
+.next{background:var(--surface);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted);line-height:1.35}
+.next strong{color:var(--text)}
+@media (orientation:landscape) and (max-height:560px){
+  .panel.wide{max-width:640px}
+  .panel{padding:14px 16px;gap:9px}
+  .panel h2{font-size:22px}
+  .stars svg{width:34px;height:34px}
+}
+#ov-count{background:rgba(3,26,51,.25);pointer-events:none}
+#count-num{font-family:var(--head);font-weight:700;font-size:120px;color:var(--text);text-shadow:0 6px 30px rgba(0,0,0,.5)}
+#count-num.pop{animation:pop .7s ease-out}
+@keyframes pop{0%{transform:scale(1.6);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.9}}
+.rot{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
+.rot svg{width:96px;height:96px;animation:rot 2s ease-in-out infinite}
+@keyframes rot{0%,20%{transform:rotate(0)}50%,80%{transform:rotate(-90deg)}100%{transform:rotate(0)}}
+.rot p{font-family:var(--head);font-weight:700;font-size:22px;margin:0}
+#ov-rotate{z-index:20;background:rgba(3,26,51,.94)}
+
+/* game over */
+.over-inner{max-width:460px;text-align:center}
+.over-title{font-size:34px;color:var(--danger)}
+.bigscore{font-family:var(--head);font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
+.pb{color:var(--gold);font-family:var(--head);font-weight:700;font-size:20px}
+.rankline{font-size:16px;font-weight:600}
+.rankline em{font-style:normal;color:var(--accent)}
+.unlock{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,200,61,.12);border:1px solid rgba(255,200,61,.4);border-radius:16px;padding:8px 12px;color:var(--gold);font-weight:700}
+.unlock img{width:48px;height:32px;object-fit:contain}
+#confetti{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:6}
+@media (orientation:landscape) and (max-height:560px){
+  .over-inner{max-width:760px;display:grid;grid-template-columns:1fr 1fr;gap:10px 18px;align-items:center}
+  .over-inner .ocol{display:flex;flex-direction:column;gap:8px}
+  .bigscore{font-size:54px}
+}
+.ocol{display:flex;flex-direction:column;gap:10px}
+.board-inner{max-width:520px}
+#s-board .rows{max-height:none}
+</style>
+</head>
+<body>
+<canvas id="game"></canvas>
+<div id="safe-probe"></div>
+
+<!-- START -->
+<section class="screen menu" id="s-start">
+  <button class="icon-btn corner" id="btn-sound" aria-label="Ljud av/på"></button>
+  <div class="menu-inner start-grid">
+    <div class="col">
+      <div class="logo">
+        <svg viewBox="0 0 40 40"><path d="M6 30 C14 28 20 18 22 6 C26 14 30 22 36 30 Z" fill="#3CE0B4"/><path d="M2 33 Q10 30 20 33 T38 33" stroke="#9DB8D6" stroke-width="2.5" fill="none" stroke-linecap="round"/></svg>
+        <div class="logo-txt"><small>ALVINS</small><div>HAJ<span>JAKT</span></div></div>
+      </div>
+      <p class="tag">Simma ifrån hajen. Samla pärlor. Slå rekord.</p>
+      <div>
+        <label class="field" for="nick">Ditt smeknamn</label>
+        <input class="input" id="nick" maxlength="12" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" placeholder="t.ex. Snabbfenan">
+        <p class="hint">Syns för alla på topplistan. Inga riktiga namn.</p>
+        <p class="err" id="nick-err"></p>
+      </div>
+      <button class="btn primary" id="btn-choose">Välj din fisk</button>
+    </div>
+    <div class="col">
+      <div class="card">
+        <div class="small-h">Topp 3 idag</div>
+        <ol class="rows" id="top3"></ol>
+        <button class="link" id="btn-board-start">Hela topplistan</button>
+        <p class="local-note lb-local" hidden>Topplistan är lokal på den här enheten tills den kopplas upp</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- VÄLJ FISK -->
+<section class="screen menu" id="s-fish">
+  <div class="menu-inner fish-layout">
+    <div class="topbar">
+      <button class="icon-btn" id="btn-fish-back" aria-label="Tillbaka"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="#EAF4FF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <h2>Välj din fisk</h2>
+    </div>
+    <div class="preview"><canvas id="preview"></canvas><div class="pname"><span id="pname"></span><small id="ptag"></small></div></div>
+    <div class="grid" id="fishgrid"></div>
+    <button class="btn primary gobtn" id="btn-swim">Simma!</button>
+  </div>
+</section>
+
+<!-- SPEL -->
+<section class="screen" id="s-game">
+  <div class="hud" id="hud">
+    <div class="lvlbox">
+      <div class="pill" id="hud-level">LEVEL 1</div>
+      <div class="prog"><div class="bar"><i id="hud-bar"></i></div><span id="hud-time">0 / 35 s</span></div>
+    </div>
+    <div class="score" id="hud-score">0</div>
+    <div class="right">
+      <div id="hud-pus" style="display:flex;gap:6px"></div>
+      <div class="chip" id="hud-pearls-chip"><svg viewBox="0 0 16 16"><circle cx="8" cy="8" r="6" fill="#EAF4FF"/><circle cx="6" cy="6" r="2" fill="#fff" opacity=".9"/><circle cx="8" cy="8" r="6" fill="none" stroke="#B9D3F0" stroke-width="1"/></svg><span id="hud-pearls">0</span></div>
+      <button class="icon-btn pause" id="btn-pause" aria-label="Paus"><svg viewBox="0 0 24 24"><rect x="6" y="5" width="4" height="14" rx="1.5" fill="#EAF4FF"/><rect x="14" y="5" width="4" height="14" rx="1.5" fill="#EAF4FF"/></svg></button>
+    </div>
+  </div>
+  <div class="shark-ind" id="shark-ind"><i></i><span id="shark-txt">Hajen: 6,0 m bakom</span></div>
+  <div class="streak" id="hud-streak"></div>
+  <button class="ctl" id="btn-up" aria-label="Upp"><svg viewBox="0 0 24 24"><path d="M5 15l7-7 7 7" stroke="#EAF4FF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+  <button class="ctl" id="btn-down" aria-label="Ned"><svg viewBox="0 0 24 24"><path d="M5 9l7 7 7-7" stroke="#EAF4FF" stroke-width="3" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+
+  <div class="ov" id="ov-count"><div id="count-num">3</div></div>
+
+  <div class="ov" id="ov-pause">
+    <div class="panel">
+      <h2>Paus</h2>
+      <button class="btn primary" id="btn-resume">Fortsätt</button>
+      <button class="btn secondary" id="btn-pause-sound">Ljud: på</button>
+      <button class="btn secondary" id="btn-quit">Avsluta rundan</button>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-level">
+    <div class="panel wide">
+      <h2 id="lc-title">LEVEL 1 KLARAD</h2>
+      <p class="sub">Du kom undan!</p>
+      <div class="stars" id="lc-stars"></div>
+      <div class="stats">
+        <div class="stat"><small>Tid</small><b id="lc-time">35 s</b></div>
+        <div class="stat"><small>Pärlor</small><b id="lc-pearls">0</b></div>
+        <div class="stat"><small>Krockar</small><b id="lc-crashes">0</b></div>
+        <div class="stat"><small>Totalt hittills</small><b id="lc-total">0</b></div>
+      </div>
+      <div class="next" id="lc-next"></div>
+      <button class="btn primary" id="btn-next">Fortsätt till level 2</button>
+    </div>
+  </div>
+
+  <div class="ov" id="ov-rotate">
+    <div class="rot">
+      <svg viewBox="0 0 96 96"><rect x="30" y="10" width="36" height="76" rx="8" fill="none" stroke="#EAF4FF" stroke-width="4"/><rect x="42" y="16" width="12" height="3" rx="1.5" fill="#9DB8D6"/><circle cx="48" cy="78" r="3" fill="#9DB8D6"/></svg>
+      <p>Vrid mobilen för att spela</p>
+    </div>
+  </div>
+</section>
+
+<!-- GAME OVER -->
+<section class="screen menu" id="s-over">
+  <canvas id="confetti"></canvas>
+  <div class="menu-inner over-inner">
+    <div class="ocol">
+      <h1 class="over-title" id="over-title">Uppäten!</h1>
+      <div class="bigscore" id="over-score">0</div>
+      <div class="sub" id="over-level">Level 1 · Lagunen</div>
+      <div class="pb" id="over-pb" hidden>Nytt personbästa!</div>
+      <div class="sub" id="over-best"></div>
+    </div>
+    <div class="ocol">
+      <div class="rankline" id="over-rank"></div>
+      <div class="rankline" id="over-chase"></div>
+      <div id="over-unlock"></div>
+      <button class="btn primary" id="btn-again">Spela igen</button>
+      <div class="btn-row">
+        <button class="btn secondary small" id="btn-change">Byt fisk</button>
+        <button class="btn secondary small" id="btn-board-over">Topplista</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TOPPLISTA -->
+<section class="screen menu" id="s-board">
+  <div class="menu-inner board-inner">
+    <div class="topbar">
+      <button class="icon-btn" id="btn-board-back" aria-label="Tillbaka"><svg viewBox="0 0 24 24"><path d="M15 5l-7 7 7 7" stroke="#EAF4FF" stroke-width="2.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg></button>
+      <h2>Topplista</h2>
+    </div>
+    <div class="tabs" id="tabs">
+      <button class="tab on" data-p="today">Idag</button>
+      <button class="tab" data-p="week">Veckan</button>
+      <button class="tab" data-p="all">Alla tider</button>
+    </div>
+    <ol class="rows" id="board-rows"></ol>
+    <p class="local-note lb-local" hidden>Topplistan är lokal på den här enheten tills den kopplas upp</p>
+  </div>
+</section>
+
+<script src="art.js"></script>
+<script src="audio.js"></script>
+<script src="fallback.js"></script>
+<script src="leaderboard.js"></script>
+<script src="game.js"></script>
+</body>
+</html>
