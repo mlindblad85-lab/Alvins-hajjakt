@@ -128,17 +128,21 @@
 
   function measure() {
     var oldW = W, oldTop = playTop, oldPH = playH;
+    uiRects = null;
     W = Math.max(1, window.innerWidth); H = Math.max(1, window.innerHeight);
     dpr = Math.min(2, window.devicePixelRatio || 1);
     canvas.width = Math.round(W * dpr); canvas.height = Math.round(H * dpr);
-    var sat = probe ? probe.getBoundingClientRect().height : 0;
+    var pr = probe ? probe.getBoundingClientRect() : null;
+    var sat = pr ? pr.height : 0, sal = pr ? Math.min(pr.width, W * 0.15) : 0;
     hudH = 54 + (sat || 0);
     playTop = hudH; playH = Math.max(120, H - hudH); playBot = playTop + playH;
-    fishX = W * 0.35;
-    fishLen = clamp(playH * 0.15, 30, 88);
+    // vänster safe-area (notch i liggande läge): räkna fiskens x och hajens avstånd från den synliga kanten
+    fishX = sal + (W - sal) * 0.35;
+    // fisk (och därmed haj, hitboxar och vägens lucka som räknas i fiskhöjder) ca 30 % större än v1
+    fishLen = clamp(playH * 0.195, 36, 114);
     fishH = fishLen * 0.42;
     sharkLen = fishLen * 2.7;
-    ppm = W / 22;
+    ppm = (W - sal) / 22;
     pearlR = Math.max(5, fishLen * 0.13);
     puR = Math.max(13, fishLen * 0.32);
     if (G && oldW && (oldW !== W || oldPH !== playH)) rescaleWorld(W / oldW, oldTop, oldPH);
@@ -149,6 +153,7 @@
   var current = 's-start', boardReturn = 's-start';
   function show(id) {
     current = id;
+    uiRects = null;
     screens.forEach(function (s) { $('#' + s).classList.toggle('active', s === id); });
     if (id === 's-fish') renderFishScreen();
     if (id === 's-start') renderTop3();
@@ -767,6 +772,7 @@
     sfx(p.type);
     sparks(p.sx, p.y, PU_COL[p.type], 14);
     floatText(fishX, g.fishY - fishLen * 0.7, PU_NAME[p.type], PU_COL[p.type], 24, 1.1);
+    if (p.type === 'ink') g.inkJet = 0.5; // bläckstråle från fisken bakåt mot hajen
   }
   function sharkCrash() {
     var g = G;
@@ -775,7 +781,7 @@
     g.score += 50;
     sfx('sharkCrash');
     shake(5, 0.2);
-    floatText(Math.max(W * 0.22, fishX - W * 0.08), playTop + playH * 0.18, 'Hajen krockade! +50', '#FFC83D', 22, 1.4);
+    floatText(Math.max(W * 0.3, fishX), playTop + playH * 0.26, 'Hajen krockade! +50', '#FFC83D', 22, 1.4);
   }
 
   /* ---------- uppdatering i spel ---------- */
@@ -828,8 +834,7 @@
     }
 
     // hinder
-    var fx0 = fishX - fishLen * 0.33, fx1 = fishX + fishLen * 0.33;
-    var fy0 = g.fishY - fishLen * 0.16, fy1 = g.fishY + fishLen * 0.16;
+    var hb = fishHitbox(), fx0 = hb.x0, fx1 = hb.x1, fy0 = hb.y0, fy1 = hb.y1;
     for (var i = g.obs.length - 1; i >= 0; i--) {
       var o = g.obs[i];
       o.x = o.wx - g.scroll;
@@ -877,6 +882,28 @@
     if (!g.inf && g.t >= c.len) levelClear();
   }
 
+  // skärmrektanglar för UPP-knappen och haj-indikatorn (cachas, nollställs vid resize/skärmbyte)
+  var uiRects = null;
+  function getUiRects() {
+    if (uiRects) return uiRects;
+    var up = $('#btn-up').getBoundingClientRect(), ind = $('#shark-ind').getBoundingClientRect();
+    if (!up.width) return { up: null, ind: null };
+    uiRects = { up: up, ind: ind.width ? ind : null };
+    return uiRects;
+  }
+  function sharkLimits(mouthX, sh) {
+    var lo = playTop + sh, hi = playBot - sh, r = getUiRects();
+    var hx0 = mouthX - sharkLen * 0.5, hx1 = mouthX + 4; // huvudets x-intervall
+    if (r.up && hx1 > r.up.left && hx0 < r.up.right) hi = Math.min(hi, r.up.top - sh * 0.45);
+    if (r.ind && hx1 > r.ind.left && hx0 < r.ind.right) lo = Math.max(lo, r.ind.bottom + sh * 0.45);
+    if (lo > hi) lo = hi = (lo + hi) / 2;
+    return { lo: lo, hi: hi };
+  }
+
+  function fishHitbox() {
+    return { x0: fishX - fishLen * 0.33, x1: fishX + fishLen * 0.33, y0: G.fishY - fishLen * 0.16, y1: G.fishY + fishLen * 0.16 };
+  }
+
   function updateShark(dt) {
     var g = G, s = g.shark, c = cfgFor(g);
     s.dizzy = Math.max(0, s.dizzy - dt);
@@ -902,12 +929,17 @@
         }
       }
     }
+    // håll hajens huvud synligt: inte bakom UPP-knappen nere till vänster eller haj-indikatorn uppe till vänster
+    var lim = sharkLimits(mouthX, sh);
+    want = clamp(want, lim.lo, lim.hi);
     s.y += (want - s.y) * Math.min(1, dt * (avoiding ? 6 : 2.5));
+    s.y = clamp(s.y, lim.lo - sh * 0.5, lim.hi + sh * 0.5);
     s.spin = s.dizzy > 0 ? s.spin + dt * 14 : s.spin * Math.max(0, 1 - dt * 8);
   }
 
   function updateFx(dt) {
     var g = G;
+    if (g.inkJet > 0) g.inkJet = Math.max(0, g.inkJet - dt);
     g.shakeT = Math.max(0, g.shakeT - dt); if (g.shakeT <= 0) g.shakeAmp = 0;
     for (var i = g.parts.length - 1; i >= 0; i--) {
       var p = g.parts[i];
@@ -999,7 +1031,8 @@
     }).then(function (a) {
       if (lastResult !== res) return;
       var rank = a[0], rows = a[1] || [];
-      $('#over-rank').innerHTML = rank === 1 ? 'Du leder dagens topplista!' : 'Du är <em>#' + rank + '</em> idag';
+      var dev = (LB.isLocal || LB.offline) ? ' på den här enheten' : '';
+      $('#over-rank').innerHTML = rank === 1 ? 'Du leder dagens topplista' + dev + '!' : 'Du är <em>#' + rank + '</em> idag' + dev;
       if (rank > 1) {
         var above = rows.filter(function (r) { return !r.me && r.score > score; });
         var nxt = above.length ? above[above.length - 1] : null;
@@ -1107,6 +1140,7 @@
     if (!e) {
       if (deep) drawDeep(time);
       drawShark(time, 1);
+      drawInkJet(time);
       drawFishNow(time);
     } else {
       if (deep) drawDeep(time);
@@ -1145,6 +1179,23 @@
     safe(function () { Art.drawShark(ctx, cx, s.y, sharkLen, time, { mouth: mouth, angle: ang, inked: g.fx.ink > 0, dizzy: s.dizzy > 0 }); });
     ctx.restore();
     if (g.fx.ink > 0) safe(function () { Art.drawInkCloud(ctx, cx + sharkLen * 0.28, s.y - sharkLen * 0.04, sharkLen * 0.22, time); });
+  }
+  function drawInkJet(time) {
+    var g = G; if (!(g.inkJet > 0)) return;
+    var u = 1 - g.inkJet / 0.5; // 0..1
+    var x0 = fishX - fishLen * 0.45, y0 = g.fishY;
+    var x1 = (g.shark.mouthX != null ? g.shark.mouthX : fishX - g.gap * ppm) - sharkLen * 0.12, y1 = g.shark.y - sharkLen * 0.04;
+    x1 = Math.max(x1, 6);
+    var head = Math.min(1, u * 1.6), tail = Math.max(0, u * 1.6 - 0.6);
+    ctx.save();
+    ctx.globalAlpha = 1 - Math.max(0, u - 0.7) / 0.3;
+    for (var i = 0; i <= 14; i++) {
+      var k = lerp(tail, head, i / 14);
+      var x = lerp(x0, x1, k), y = lerp(y0, y1, k) + Math.sin(k * 9 + time * 20) * fishLen * 0.06;
+      ctx.fillStyle = i % 2 ? 'rgba(40,16,70,0.85)' : 'rgba(110,70,190,0.75)';
+      ctx.beginPath(); ctx.arc(x, y, fishLen * (0.05 + 0.1 * k), 0, 6.283); ctx.fill();
+    }
+    ctx.restore();
   }
   function drawFishNow(time) {
     var g = G;
@@ -1293,6 +1344,30 @@
     ctx.restore();
   }
 
+  // debug: &hit=1 ritar hitboxar (fisk, hinder, väg/korridor)
+  var SHOW_HIT = DEBUG && qs.get('hit') === '1';
+  function drawHitboxes() {
+    var g = G;
+    ctx.save(); ctx.lineWidth = 1.5;
+    ctx.strokeStyle = '#00FF66';
+    var hb = fishHitbox();
+    ctx.strokeRect(hb.x0, hb.y0, hb.x1 - hb.x0, hb.y1 - hb.y0);
+    ctx.strokeStyle = '#FF00FF';
+    g.obs.forEach(function (o) {
+      if (o.x == null || o.y == null) return;
+      var ix = o.w * 0.1, iy = o.h * 0.07;
+      ctx.strokeRect(o.x + ix, o.y + iy, o.w - 2 * ix, o.h - 2 * iy);
+    });
+    ctx.strokeStyle = 'rgba(255,255,0,0.7)'; ctx.setLineDash([4, 4]);
+    var gp = corrGap(g, false);
+    [-1, 0, 1].forEach(function (s) {
+      ctx.beginPath();
+      for (var x = 0; x <= W; x += 8) { var y = pathAt(g.scroll + x) + s * gp / 2; if (x) ctx.lineTo(x, y); else ctx.moveTo(x, y); }
+      ctx.stroke();
+    });
+    ctx.restore();
+  }
+
   function render(time) {
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
     if (!G || current !== 's-game') {
@@ -1310,6 +1385,7 @@
       ctx.translate(e.fx0, e.fy0); ctx.scale(z, z); ctx.translate(-e.fx0, -e.fy0);
     }
     drawWorld(time);
+    if (SHOW_HIT && g.mode !== 'eaten') drawHitboxes();
     drawTexts();
     ctx.restore();
     drawVignette(time);
