@@ -3569,7 +3569,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 
   var mode = hasSupabase ? 'supabase' : 'local';
   var listeners = [];
-  var lastLocalId = null, lastSubmitted = null;
+  var lastLocalId = null, lastSubmitted = null, currentNick = '';
   var offlineUntil = 0, offline = false; // efter nätfel: använd lokala data en stund
 
   function remoteOk() { return mode === 'supabase' && Date.now() >= offlineUntil; }
@@ -3611,13 +3611,26 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     var s = sinceISO(period);
     return lget().filter(function (r) { return !s || r.created_at >= s; }).sort(function (x, y) { return y.score - x.score; });
   }
+  // En rad per person: behåll bara varje smeknamns bästa resultat (raderna är sorterade bäst först).
+  function nickKey(n) { return String(n || '').toLowerCase(); }
+  function bestPerNick(rows) {
+    var seen = {}, out = [];
+    (rows || []).forEach(function (r) { var k = nickKey(r.nick); if (!seen[k]) { seen[k] = 1; out.push(r); } });
+    return out;
+  }
+  function myNick() { return nickKey(currentNick || (lastSubmitted && lastSubmitted.nick) || ''); }
+  function countOthersAbove(rows, score) {
+    var me = myNick();
+    return bestPerNick(rows.filter(function (r) { return r.score > score && nickKey(r.nick) !== me; })).length;
+  }
   function localList(period) {
-    return Promise.resolve(localFiltered(period).slice(0, 50).map(function (r) {
-      return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: r.id === lastLocalId };
+    var me = myNick();
+    return Promise.resolve(bestPerNick(localFiltered(period)).slice(0, 50).map(function (r) {
+      return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: !!me && nickKey(r.nick) === me };
     }));
   }
   function localRank(score, period) {
-    return Promise.resolve(localFiltered(period).filter(function (r) { return r.score > score; }).length + 1);
+    return Promise.resolve(countOthersAbove(localFiltered(period), score) + 1);
   }
 
   /* ---------------- Supabase REST ---------------- */
@@ -3641,27 +3654,24 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       body: JSON.stringify({ nick: e.nick, score: e.score, level: e.level, fish: e.fish }) }).then(function () { return { ok: true }; });
   }
   function sbList(period) {
-    var q = 'scores?select=nick,score,level,fish,created_at&order=score.desc&limit=50';
+    // Hämta fler rader än som visas och slå ihop till en rad per smeknamn.
+    var q = 'scores?select=nick,score,level,fish,created_at&order=score.desc&limit=1000';
     var s = sinceISO(period);
     if (s) q += '&created_at=gte.' + encodeURIComponent(s);
     return sbFetch(q).then(function (r) { return r.json(); }).then(function (rows) {
-      var marked = false;
-      return (rows || []).map(function (r) {
-        var me = false;
-        if (!marked && lastSubmitted && r.nick === lastSubmitted.nick && r.score === lastSubmitted.score) { me = true; marked = true; }
-        return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: me };
+      var me = myNick();
+      return bestPerNick(rows).slice(0, 50).map(function (r) {
+        return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: !!me && nickKey(r.nick) === me };
       });
     });
   }
   function sbRank(score, period) {
-    // limit=1 håller svaret litet; totalen läses ändå ur Content-Range.
-    var q = 'scores?select=id&score=gt.' + Math.floor(score) + '&limit=1';
+    // Placering = antal andra spelare vars bästa resultat är högre, plus ett.
+    var q = 'scores?select=nick,score&score=gt.' + Math.floor(score) + '&order=score.desc&limit=1000';
     var s = sinceISO(period);
     if (s) q += '&created_at=gte.' + encodeURIComponent(s);
-    return sbFetch(q, { prefer: 'count=exact' }).then(function (r) {
-      var cr = r.headers.get('Content-Range') || '';
-      var n = parseInt(cr.split('/')[1], 10);
-      return (isFinite(n) ? n : 0) + 1;
+    return sbFetch(q).then(function (r) { return r.json(); }).then(function (rows) {
+      return countOthersAbove(rows || [], score) + 1;
     });
   }
 
@@ -3671,9 +3681,10 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     get isLocal() { return mode === 'local'; },
     get offline() { return mode === 'supabase' && offline; },
     onChange: function (fn) { listeners.push(fn); },
+    setNick: function (n) { currentNick = String(n || ''); },
     submit: function (e) {
       e = { nick: String(e.nick), score: Math.max(0, Math.min(2000000, Math.floor(e.score))), level: Math.max(1, Math.min(99, e.level | 0)), fish: String(e.fish || '') };
-      lastSubmitted = e;
+      lastSubmitted = e; currentNick = e.nick;
       localAdd(e); // spara alltid lokalt också, som reserv
       var id = lastLocalId;
       if (!remoteOk()) return Promise.resolve({ ok: mode === 'local', id: id, offline: mode === 'supabase' });
@@ -4727,13 +4738,16 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       return Promise.all([LB.rank(score, 'today'), LB.list('today')]);
     }).then(function (a) {
       if (lastResult !== res) return;
-      var rank = a[0], rows = a[1] || [];
+      var rank = a[0], rows = a[1] || [], myScore = score;
+      // En rad per spelare: visa placeringen för spelarens bästa resultat idag.
+      var mine = rows.filter(function (r) { return r.me; })[0];
+      if (mine && mine.score >= score) { rank = rows.indexOf(mine) + 1; myScore = mine.score; }
       var dev = (LB.isLocal || LB.offline) ? ' på den här enheten' : '';
       $('#over-rank').innerHTML = rank === 1 ? 'Du leder dagens topplista' + dev + '!' : 'Du är <em>#' + rank + '</em> idag' + dev;
       if (rank > 1) {
-        var above = rows.filter(function (r) { return !r.me && r.score > score; });
+        var above = rows.filter(function (r) { return !r.me && r.score > myScore; });
         var nxt = above.length ? above[above.length - 1] : null;
-        if (nxt) $('#over-chase').innerHTML = 'Bara <em>' + fmt(nxt.score - score + 1) + ' p</em> till plats ' + (rank - 1);
+        if (nxt) $('#over-chase').innerHTML = 'Bara <em>' + fmt(nxt.score - myScore + 1) + ' p</em> till plats ' + (rank - 1);
       }
     }).catch(function () { if (lastResult === res) $('#over-rank').innerHTML = '<span class="sub">Topplistan kunde inte laddas</span>'; });
   }
@@ -4769,6 +4783,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
   var boardPeriod = 'today';
   function openBoard(from) { boardReturn = from; show('s-board'); loadBoard(); }
   function loadBoard() {
+    if (LB.setNick) LB.setNick(prof.nick);
     updateLbNotes();
     $$('#tabs .tab').forEach(function (t) { t.classList.toggle('on', t.dataset.p === boardPeriod); });
     var el = $('#board-rows'), p = boardPeriod;

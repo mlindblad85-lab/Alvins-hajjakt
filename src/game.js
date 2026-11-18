@@ -1030,13 +1030,16 @@
       return Promise.all([LB.rank(score, 'today'), LB.list('today')]);
     }).then(function (a) {
       if (lastResult !== res) return;
-      var rank = a[0], rows = a[1] || [];
+      var rank = a[0], rows = a[1] || [], myScore = score;
+      // En rad per spelare: visa placeringen för spelarens bästa resultat idag.
+      var mine = rows.filter(function (r) { return r.me; })[0];
+      if (mine && mine.score >= score) { rank = rows.indexOf(mine) + 1; myScore = mine.score; }
       var dev = (LB.isLocal || LB.offline) ? ' på den här enheten' : '';
       $('#over-rank').innerHTML = rank === 1 ? 'Du leder dagens topplista' + dev + '!' : 'Du är <em>#' + rank + '</em> idag' + dev;
       if (rank > 1) {
-        var above = rows.filter(function (r) { return !r.me && r.score > score; });
+        var above = rows.filter(function (r) { return !r.me && r.score > myScore; });
         var nxt = above.length ? above[above.length - 1] : null;
-        if (nxt) $('#over-chase').innerHTML = 'Bara <em>' + fmt(nxt.score - score + 1) + ' p</em> till plats ' + (rank - 1);
+        if (nxt) $('#over-chase').innerHTML = 'Bara <em>' + fmt(nxt.score - myScore + 1) + ' p</em> till plats ' + (rank - 1);
       }
     }).catch(function () { if (lastResult === res) $('#over-rank').innerHTML = '<span class="sub">Topplistan kunde inte laddas</span>'; });
   }
@@ -1072,6 +1075,7 @@
   var boardPeriod = 'today';
   function openBoard(from) { boardReturn = from; show('s-board'); loadBoard(); }
   function loadBoard() {
+    if (LB.setNick) LB.setNick(prof.nick);
     updateLbNotes();
     $$('#tabs .tab').forEach(function (t) { t.classList.toggle('on', t.dataset.p === boardPeriod); });
     var el = $('#board-rows'), p = boardPeriod;

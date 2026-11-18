@@ -20,7 +20,7 @@
 
   var mode = hasSupabase ? 'supabase' : 'local';
   var listeners = [];
-  var lastLocalId = null, lastSubmitted = null;
+  var lastLocalId = null, lastSubmitted = null, currentNick = '';
   var offlineUntil = 0, offline = false; // efter nätfel: använd lokala data en stund
 
   function remoteOk() { return mode === 'supabase' && Date.now() >= offlineUntil; }
@@ -62,13 +62,26 @@
     var s = sinceISO(period);
     return lget().filter(function (r) { return !s || r.created_at >= s; }).sort(function (x, y) { return y.score - x.score; });
   }
+  // En rad per person: behåll bara varje smeknamns bästa resultat (raderna är sorterade bäst först).
+  function nickKey(n) { return String(n || '').toLowerCase(); }
+  function bestPerNick(rows) {
+    var seen = {}, out = [];
+    (rows || []).forEach(function (r) { var k = nickKey(r.nick); if (!seen[k]) { seen[k] = 1; out.push(r); } });
+    return out;
+  }
+  function myNick() { return nickKey(currentNick || (lastSubmitted && lastSubmitted.nick) || ''); }
+  function countOthersAbove(rows, score) {
+    var me = myNick();
+    return bestPerNick(rows.filter(function (r) { return r.score > score && nickKey(r.nick) !== me; })).length;
+  }
   function localList(period) {
-    return Promise.resolve(localFiltered(period).slice(0, 50).map(function (r) {
-      return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: r.id === lastLocalId };
+    var me = myNick();
+    return Promise.resolve(bestPerNick(localFiltered(period)).slice(0, 50).map(function (r) {
+      return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: !!me && nickKey(r.nick) === me };
     }));
   }
   function localRank(score, period) {
-    return Promise.resolve(localFiltered(period).filter(function (r) { return r.score > score; }).length + 1);
+    return Promise.resolve(countOthersAbove(localFiltered(period), score) + 1);
   }
 
   /* ---------------- Supabase REST ---------------- */
@@ -92,27 +105,24 @@
       body: JSON.stringify({ nick: e.nick, score: e.score, level: e.level, fish: e.fish }) }).then(function () { return { ok: true }; });
   }
   function sbList(period) {
-    var q = 'scores?select=nick,score,level,fish,created_at&order=score.desc&limit=50';
+    // Hämta fler rader än som visas och slå ihop till en rad per smeknamn.
+    var q = 'scores?select=nick,score,level,fish,created_at&order=score.desc&limit=1000';
     var s = sinceISO(period);
     if (s) q += '&created_at=gte.' + encodeURIComponent(s);
     return sbFetch(q).then(function (r) { return r.json(); }).then(function (rows) {
-      var marked = false;
-      return (rows || []).map(function (r) {
-        var me = false;
-        if (!marked && lastSubmitted && r.nick === lastSubmitted.nick && r.score === lastSubmitted.score) { me = true; marked = true; }
-        return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: me };
+      var me = myNick();
+      return bestPerNick(rows).slice(0, 50).map(function (r) {
+        return { nick: r.nick, score: r.score, level: r.level, fish: r.fish, me: !!me && nickKey(r.nick) === me };
       });
     });
   }
   function sbRank(score, period) {
-    // limit=1 håller svaret litet; totalen läses ändå ur Content-Range.
-    var q = 'scores?select=id&score=gt.' + Math.floor(score) + '&limit=1';
+    // Placering = antal andra spelare vars bästa resultat är högre, plus ett.
+    var q = 'scores?select=nick,score&score=gt.' + Math.floor(score) + '&order=score.desc&limit=1000';
     var s = sinceISO(period);
     if (s) q += '&created_at=gte.' + encodeURIComponent(s);
-    return sbFetch(q, { prefer: 'count=exact' }).then(function (r) {
-      var cr = r.headers.get('Content-Range') || '';
-      var n = parseInt(cr.split('/')[1], 10);
-      return (isFinite(n) ? n : 0) + 1;
+    return sbFetch(q).then(function (r) { return r.json(); }).then(function (rows) {
+      return countOthersAbove(rows || [], score) + 1;
     });
   }
 
@@ -122,9 +132,10 @@
     get isLocal() { return mode === 'local'; },
     get offline() { return mode === 'supabase' && offline; },
     onChange: function (fn) { listeners.push(fn); },
+    setNick: function (n) { currentNick = String(n || ''); },
     submit: function (e) {
       e = { nick: String(e.nick), score: Math.max(0, Math.min(2000000, Math.floor(e.score))), level: Math.max(1, Math.min(99, e.level | 0)), fish: String(e.fish || '') };
-      lastSubmitted = e;
+      lastSubmitted = e; currentNick = e.nick;
       localAdd(e); // spara alltid lokalt också, som reserv
       var id = lastLocalId;
       if (!remoteOk()) return Promise.resolve({ ok: mode === 'local', id: id, offline: mode === 'supabase' });
