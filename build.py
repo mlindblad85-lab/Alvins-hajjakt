@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Buntar src/ till dist/index.html med all JS inline.
+"""Buntar src/ till hajjakten/index.html med all JS inline.
 Kör: python3 build.py
 fallback.js hoppas över om både art.js och audio.js finns."""
 import os
@@ -8,7 +8,7 @@ import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(ROOT, 'src')
-DIST = os.path.join(ROOT, 'dist')
+DIST = os.path.join(ROOT, 'hajjakten')
 
 
 def main():
