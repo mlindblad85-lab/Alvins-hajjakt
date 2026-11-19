@@ -42,11 +42,13 @@ svg{display:block}
 .menu-inner{margin:auto;width:100%;max-width:440px;display:flex;flex-direction:column;gap:14px}
 h1,h2,h3{font-family:var(--head);margin:0;letter-spacing:.01em}
 .logo{font-family:var(--head);font-weight:700;font-size:44px;line-height:1;letter-spacing:.04em;display:flex;align-items:center;gap:10px}
-.logo span{color:var(--accent)}
-.logo svg{width:44px;height:44px;flex:none}
+.logo span{color:var(--accent);text-shadow:0 0 22px rgba(60,224,180,.45)}
+.logo>div{text-shadow:0 4px 18px rgba(0,0,0,.35)}
+.logo svg{width:44px;height:44px;flex:none;filter:drop-shadow(0 0 10px rgba(60,224,180,.45))}
 .logo-txt small{display:block;font-size:15px;letter-spacing:.32em;color:var(--muted);font-weight:600;margin-bottom:4px}
 .tag{color:var(--muted);margin:2px 0 6px;font-size:15px}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:16px}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.09),rgba(255,255,255,.04));border:1px solid var(--line);border-radius:20px;padding:16px;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.08),0 10px 30px rgba(0,0,0,.18)}
 label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color:var(--text)}
 .input{width:100%;height:52px;border-radius:14px;border:1.5px solid var(--line);background:rgba(0,0,0,.22);color:var(--text);
   padding:0 16px;font-size:18px;font-weight:600;outline:none;transition:border-color .15s}
@@ -58,12 +60,14 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 .btn{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;border-radius:16px;padding:0 22px;font-weight:700;font-size:17px;
   font-family:var(--head);letter-spacing:.02em;transition:transform .08s,filter .15s;width:100%}
 .btn:active{transform:scale(.97)}
-.btn.primary{background:var(--accent);color:var(--accent-ink);box-shadow:0 8px 24px rgba(60,224,180,.25)}
-.btn.secondary{background:var(--surface2);border:1px solid var(--line);color:var(--text)}
+.btn.primary{background:linear-gradient(180deg,#6FF5D2 0%,#3CE0B4 45%,#25C49A 100%);color:var(--accent-ink);
+  box-shadow:0 8px 24px rgba(60,224,180,.3),inset 0 1px 0 rgba(255,255,255,.55),inset 0 -2px 0 rgba(0,60,45,.25)}
+.btn.secondary{background:linear-gradient(180deg,rgba(255,255,255,.14),rgba(255,255,255,.06));border:1px solid var(--line);color:var(--text);
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .btn.small{min-height:44px;font-size:15px;border-radius:14px}
 .btn-row{display:flex;gap:10px}
 .link{color:var(--accent);font-weight:600;font-size:15px;min-height:44px;display:inline-flex;align-items:center}
-.icon-btn{width:44px;height:44px;border-radius:14px;background:var(--surface2);border:1px solid var(--line);display:flex;align-items:center;justify-content:center;flex:none}
+.icon-btn{width:44px;height:44px;border-radius:14px;background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border:1px solid var(--line);box-shadow:inset 0 1px 0 rgba(255,255,255,.14),0 4px 12px rgba(0,0,0,.18);display:flex;align-items:center;justify-content:center;flex:none}
 .icon-btn svg{width:22px;height:22px}
 .corner{position:absolute;top:calc(12px + var(--sat));right:calc(12px + var(--sar));z-index:2}
 .topbar{display:flex;align-items:center;gap:12px}
@@ -98,7 +102,8 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 
 /* välj fisk */
 .fish-layout{display:flex;flex-direction:column;gap:14px;max-width:520px}
-.preview{position:relative;height:170px;border-radius:22px;background:radial-gradient(ellipse at 50% 40%,rgba(10,74,128,.9),rgba(6,48,90,.5));border:1px solid var(--line);overflow:hidden}
+.preview{position:relative;height:170px;border-radius:22px;background:radial-gradient(ellipse at 50% 30%,rgba(60,180,220,.35),rgba(10,74,128,.85) 45%,rgba(4,30,60,.9));border:1px solid var(--line);overflow:hidden;
+  box-shadow:inset 0 1px 0 rgba(255,255,255,.12),inset 0 -30px 50px rgba(2,16,34,.5),0 12px 30px rgba(0,0,0,.25)}
 .preview canvas{position:absolute;inset:0;width:100%;height:100%}
 .preview .pname{position:absolute;left:16px;right:16px;bottom:12px;font-family:var(--head);font-weight:700;font-size:22px}
 .preview .pname small{display:block;font-family:var(--body);font-weight:500;font-size:13px;color:var(--muted);margin-top:2px}
@@ -107,7 +112,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 .fcell{position:relative;border-radius:16px;background:var(--surface);border:1.5px solid transparent;padding:8px 4px 8px;display:flex;flex-direction:column;align-items:center;gap:4px;min-height:84px}
 .fcell img{width:64px;height:40px;object-fit:contain}
 .fcell .fn{font-size:13px;font-weight:600}
-.fcell.sel{border-color:var(--accent);background:rgba(60,224,180,.12)}
+.fcell.sel{border-color:var(--accent);background:radial-gradient(ellipse at 50% 30%,rgba(60,224,180,.24),rgba(60,224,180,.08));box-shadow:0 0 18px rgba(60,224,180,.25),inset 0 1px 0 rgba(255,255,255,.12)}
 .fcell.locked img{opacity:.28;filter:grayscale(1)}
 .fcell.locked .fn{color:var(--muted)}
 .fcell .lock{position:absolute;top:8px;right:8px;width:16px;height:16px;opacity:.85}
@@ -127,31 +132,40 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 .hud{position:absolute;left:0;right:0;top:0;height:calc(54px + var(--sat));padding:var(--sat) calc(10px + var(--sar)) 0 calc(10px + var(--sal));
   display:flex;align-items:center;gap:10px;background:linear-gradient(180deg,rgba(3,26,51,.92),rgba(3,26,51,.55) 70%,rgba(3,26,51,0));pointer-events:none}
 .hud .lvlbox{display:flex;flex-direction:column;gap:4px;min-width:0;flex:1 1 0}
-.pill{align-self:flex-start;font-family:var(--head);font-weight:700;font-size:12px;letter-spacing:.08em;padding:4px 10px;border-radius:999px;background:rgba(255,255,255,.12);white-space:nowrap}
+.pill{align-self:flex-start;font-family:var(--head);font-weight:700;font-size:12px;letter-spacing:.08em;padding:4px 10px;border-radius:999px;white-space:nowrap;
+  background:linear-gradient(180deg,rgba(255,255,255,.18),rgba(255,255,255,.07));border:1px solid rgba(255,255,255,.14);box-shadow:inset 0 1px 0 rgba(255,255,255,.12)}
 .prog{display:flex;align-items:center;gap:8px;max-width:240px}
-.bar{flex:1;height:6px;border-radius:6px;background:rgba(255,255,255,.14);overflow:hidden}
-.bar i{display:block;height:100%;width:0;background:var(--accent);border-radius:6px}
+.bar{flex:1;height:7px;border-radius:7px;background:rgba(0,10,25,.45);overflow:hidden;box-shadow:inset 0 1px 2px rgba(0,0,0,.4),0 0 0 1px rgba(255,255,255,.08)}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,#1FB98F,#3CE0B4 70%,#B8FFEA);border-radius:7px;box-shadow:0 0 8px rgba(60,224,180,.7)}
 .prog span{font-size:11px;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
-.hud .score{font-family:var(--head);font-weight:700;font-size:28px;font-variant-numeric:tabular-nums;text-align:center;flex:0 0 auto;min-width:90px;text-shadow:0 2px 10px rgba(0,0,0,.4)}
+.hud .score{font-family:var(--head);font-weight:700;font-size:28px;font-variant-numeric:tabular-nums;text-align:center;flex:0 0 auto;min-width:90px;letter-spacing:.02em;
+  text-shadow:0 0 16px rgba(120,220,255,.35),0 2px 6px rgba(0,0,0,.55)}
 .hud .right{display:flex;align-items:center;gap:8px;justify-content:flex-end;flex:1 1 0}
-.chip{display:flex;align-items:center;gap:5px;font-weight:700;font-size:14px;padding:4px 9px;border-radius:999px;background:rgba(255,255,255,.1);font-variant-numeric:tabular-nums;white-space:nowrap}
+.chip{display:flex;align-items:center;gap:5px;font-weight:700;font-size:14px;padding:4px 9px;border-radius:999px;font-variant-numeric:tabular-nums;white-space:nowrap;
+  background:linear-gradient(180deg,rgba(255,255,255,.16),rgba(255,255,255,.06));border:1px solid rgba(255,255,255,.12)}
 .chip svg{width:16px;height:16px}
 .pu{position:relative}
 .pu b{font-weight:700}
 .hud .pause{pointer-events:auto}
 .shark-ind{position:absolute;left:calc(10px + var(--sal));top:calc(60px + var(--sat));display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;
-  padding:5px 10px;border-radius:999px;background:rgba(3,26,51,.55);pointer-events:none;font-variant-numeric:tabular-nums}
+  padding:5px 10px;border-radius:999px;background:linear-gradient(180deg,rgba(6,40,74,.7),rgba(3,26,51,.6));border:1px solid rgba(255,90,95,.28);pointer-events:none;font-variant-numeric:tabular-nums;
+  transition:background .25s,border-color .25s}
 .shark-ind i{width:9px;height:9px;border-radius:50%;background:var(--danger);box-shadow:0 0 8px var(--danger)}
-.shark-ind.near{color:#FFD0D1;background:rgba(120,10,20,.55)}
+.shark-ind.near{color:#FFD0D1;background:linear-gradient(180deg,rgba(150,16,28,.7),rgba(100,8,18,.6));border-color:rgba(255,90,95,.7);box-shadow:0 0 14px rgba(255,60,70,.35)}
 .shark-ind.near i{animation:blink .5s infinite}
 @keyframes blink{50%{opacity:.25}}
-.streak{position:absolute;top:calc(60px + var(--sat));left:50%;transform:translateX(-50%);font-family:var(--head);font-weight:700;color:var(--gold);font-size:14px;
-  padding:4px 10px;border-radius:999px;background:rgba(3,26,51,.5);pointer-events:none}
+.streak{position:absolute;top:calc(60px + var(--sat));left:50%;transform:translateX(-50%);font-family:var(--head);font-weight:700;color:var(--gold);font-size:14px;letter-spacing:.04em;
+  padding:4px 12px;border-radius:999px;background:linear-gradient(180deg,rgba(60,40,0,.6),rgba(3,26,51,.55));border:1px solid rgba(255,200,61,.5);box-shadow:0 0 14px rgba(255,200,61,.3);
+  text-shadow:0 0 10px rgba(255,200,61,.5);pointer-events:none}
 .streak:empty{display:none}
-.ctl{position:absolute;bottom:calc(10px + var(--sab));width:88px;height:88px;border-radius:50%;background:rgba(255,255,255,.12);border:2px solid rgba(255,255,255,.3);
-  display:flex;align-items:center;justify-content:center;touch-action:none;backdrop-filter:blur(2px);-webkit-backdrop-filter:blur(2px);transition:background .08s,transform .08s}
+.ctl{position:absolute;bottom:calc(10px + var(--sab));width:88px;height:88px;border-radius:50%;
+  background:radial-gradient(circle at 50% 35%,rgba(255,255,255,.2),rgba(255,255,255,.07) 60%,rgba(255,255,255,.12));border:2px solid rgba(255,255,255,.3);
+  box-shadow:inset 0 2px 0 rgba(255,255,255,.18),inset 0 -6px 14px rgba(0,10,30,.25),0 6px 18px rgba(0,0,0,.22);
+  display:flex;align-items:center;justify-content:center;touch-action:none;transition:background .08s,transform .08s,box-shadow .08s}
+.ctl svg{filter:drop-shadow(0 2px 3px rgba(0,0,0,.35))}
 .ctl svg{width:44px;height:44px}
-.ctl.on{background:rgba(60,224,180,.35);border-color:rgba(60,224,180,.8);transform:scale(.95)}
+.ctl.on{background:radial-gradient(circle at 50% 40%,rgba(120,255,215,.55),rgba(60,224,180,.3) 65%);border-color:rgba(120,255,215,.9);transform:scale(.95);
+  box-shadow:0 0 22px rgba(60,224,180,.55),inset 0 2px 0 rgba(255,255,255,.3)}
 #s-game.eaten .ctl,#s-game.eaten .shark-ind,#s-game.eaten .streak{opacity:0;pointer-events:none;transition:opacity .3s}
 #btn-up{left:calc(14px + var(--sal))}
 #btn-down{right:calc(14px + var(--sar))}
@@ -161,14 +175,16 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 .ov{position:absolute;inset:0;display:none;align-items:center;justify-content:center;z-index:10;background:rgba(3,26,51,.72);overflow-y:auto;
   padding:calc(14px + var(--sat)) calc(14px + var(--sar)) calc(14px + var(--sab)) calc(14px + var(--sal))}
 .ov.show{display:flex}
-.panel{background:linear-gradient(180deg,rgba(10,74,128,.55),rgba(6,48,90,.75));border:1px solid var(--line);border-radius:22px;padding:18px;width:100%;max-width:440px;
-  display:flex;flex-direction:column;gap:12px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.4)}
+.panel{background:linear-gradient(180deg,rgba(18,96,156,.72),rgba(6,48,90,.88) 55%,rgba(4,34,68,.92));border:1px solid rgba(255,255,255,.16);border-radius:22px;padding:18px;width:100%;max-width:440px;
+  display:flex;flex-direction:column;gap:12px;margin:auto;box-shadow:0 20px 50px rgba(0,0,0,.45),inset 0 1px 0 rgba(255,255,255,.18),inset 0 0 40px rgba(60,180,255,.08)}
+.panel h2{text-shadow:0 0 20px rgba(120,220,255,.3)}
+.stars svg{filter:drop-shadow(0 0 8px rgba(255,200,61,.45))}
 .panel h2{font-size:26px;text-align:center}
 .sub{color:var(--muted);text-align:center;margin:-6px 0 0}
 .stars{display:flex;justify-content:center;gap:10px}
 .stars svg{width:42px;height:42px}
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.stat{background:var(--surface);border-radius:14px;padding:8px 6px;text-align:center}
+.stat{background:linear-gradient(180deg,rgba(255,255,255,.1),rgba(255,255,255,.04));border:1px solid rgba(255,255,255,.08);border-radius:14px;padding:8px 6px;text-align:center}
 .stat small{display:block;color:var(--muted);font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:.06em}
 .stat b{font-family:var(--head);font-size:18px}
 .next{background:var(--surface);border-radius:14px;padding:10px 12px;font-size:14px;color:var(--muted);line-height:1.35}
@@ -180,7 +196,8 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
   .stars svg{width:34px;height:34px}
 }
 #ov-count{background:rgba(3,26,51,.25);pointer-events:none}
-#count-num{font-family:var(--head);font-weight:700;font-size:120px;color:var(--text);text-shadow:0 6px 30px rgba(0,0,0,.5)}
+#count-num{font-family:var(--head);font-weight:700;font-size:120px;color:var(--text);
+  text-shadow:0 0 24px rgba(60,224,180,.55),0 0 60px rgba(60,224,180,.25),0 6px 24px rgba(0,0,0,.55)}
 #count-num.pop{animation:pop .7s ease-out}
 @keyframes pop{0%{transform:scale(1.6);opacity:0}25%{transform:scale(1);opacity:1}100%{transform:scale(.9);opacity:.9}}
 .rot{display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center}
@@ -191,9 +208,9 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
 
 /* game over */
 .over-inner{max-width:460px;text-align:center}
-.over-title{font-size:34px;color:var(--danger)}
-.bigscore{font-family:var(--head);font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums}
-.pb{color:var(--gold);font-family:var(--head);font-weight:700;font-size:20px}
+.over-title{font-size:34px;color:var(--danger);text-shadow:0 0 22px rgba(255,90,95,.45)}
+.bigscore{font-family:var(--head);font-weight:700;font-size:64px;line-height:1;font-variant-numeric:tabular-nums;text-shadow:0 0 26px rgba(120,220,255,.35),0 4px 14px rgba(0,0,0,.45)}
+.pb{color:var(--gold);font-family:var(--head);font-weight:700;font-size:20px;text-shadow:0 0 16px rgba(255,200,61,.55)}
 .rankline{font-size:16px;font-weight:600}
 .rankline em{font-style:normal;color:var(--accent)}
 .unlock{display:flex;align-items:center;justify-content:center;gap:10px;background:rgba(255,200,61,.12);border:1px solid rgba(255,200,61,.4);border-radius:16px;padding:8px 12px;color:var(--gold);font-weight:700}
@@ -1239,17 +1256,38 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.save();
     g.clip();
     drawPattern(g, d, L, hh, t, null);
-    // soft shading: lower shadow + top highlight
-    var sg = g.createLinearGradient(0, -hh, 0, hh);
-    sg.addColorStop(0, 'rgba(255,255,255,0.0)');
-    sg.addColorStop(0.7, 'rgba(0,0,0,0)');
-    sg.addColorStop(1, 'rgba(0,0,30,0.22)');
+    // volume shading: light from above-front, body rounds off into shadow toward belly and tail
+    var sg = g.createRadialGradient(0.14 * L, -0.45 * hh, hh * 0.15, 0.02 * L, 0.05 * hh, L * 0.62);
+    sg.addColorStop(0, 'rgba(255,255,255,0.10)');
+    sg.addColorStop(0.45, 'rgba(0,0,0,0)');
+    sg.addColorStop(0.8, 'rgba(0,6,30,0.20)');
+    sg.addColorStop(1, 'rgba(0,6,30,0.38)');
     g.fillStyle = sg;
     g.fillRect(-0.5 * L, -hh, L, hh * 2);
-    g.fillStyle = 'rgba(255,255,255,0.22)';
+    // specular streak along the back
+    var hg = g.createLinearGradient(0, -0.85 * hh, 0, -0.25 * hh);
+    hg.addColorStop(0, 'rgba(255,255,255,0.42)');
+    hg.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = hg;
     g.beginPath();
-    g.ellipse(0.12 * L, -0.55 * hh, 0.26 * L, 0.2 * hh, -0.08, 0, TAU);
+    g.ellipse(0.1 * L, -0.55 * hh, 0.3 * L, 0.24 * hh, -0.06, 0, TAU);
     g.fill();
+    // bounce light from below (water colour) for a rounder belly
+    g.strokeStyle = 'rgba(200,240,255,0.28)';
+    g.lineWidth = Math.max(1, L * 0.03);
+    g.beginPath();
+    g.moveTo(0.36 * L, 0.62 * hh);
+    g.quadraticCurveTo(0.1 * L, 1.0 * hh, -0.2 * L, 0.6 * hh);
+    g.stroke();
+    // thin rim light just inside the upper outline
+    g.save();
+    g.beginPath(); g.rect(-0.6 * L, -1.3 * hh, 1.2 * L, 1.0 * hh); g.clip();
+    g.translate(-lw * 0.4, lw * 1.5);
+    fishBodyPath(g, L, hh);
+    g.strokeStyle = 'rgba(255,255,255,0.4)';
+    g.lineWidth = lw * 1.4;
+    g.stroke();
+    g.restore();
     // gill arc
     g.strokeStyle = rgba(d.line, 0.35);
     g.lineWidth = Math.max(0.7, L * 0.014);
@@ -1583,9 +1621,24 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.bezierCurveTo(-0.26 * s, 0.065 * s, -0.33 * s, 0.03 * s, -0.4 * s, 0.03 * s);
     g.lineTo(-0.4 * s, 0.3 * s); g.lineTo(0.56 * s, 0.3 * s); g.closePath();
     g.fillStyle = SH.belly; g.fill();
+    // volume: darker toward the tail and underside edge, lit snout/back
+    var vs = g.createRadialGradient(0.2 * s, -0.07 * s, 0.02 * s, 0.05 * s, 0, 0.5 * s);
+    vs.addColorStop(0, 'rgba(255,255,255,0.08)');
+    vs.addColorStop(0.5, 'rgba(0,0,0,0)');
+    vs.addColorStop(1, 'rgba(5,12,28,0.42)');
+    g.fillStyle = vs; g.fillRect(-0.4 * s, -0.2 * s, 0.96 * s, 0.4 * s);
     // top sheen
-    g.fillStyle = 'rgba(255,255,255,0.13)';
-    g.beginPath(); g.ellipse(0.12 * s, -0.11 * s, 0.26 * s, 0.03 * s, -0.05, 0, TAU); g.fill();
+    var shg = g.createLinearGradient(0, -0.15 * s, 0, -0.07 * s);
+    shg.addColorStop(0, 'rgba(255,255,255,0.28)'); shg.addColorStop(1, 'rgba(255,255,255,0)');
+    g.fillStyle = shg;
+    g.beginPath(); g.ellipse(0.12 * s, -0.11 * s, 0.3 * s, 0.04 * s, -0.05, 0, TAU); g.fill();
+    // rim light inside the back outline
+    g.save();
+    g.beginPath(); g.rect(-0.4 * s, -0.2 * s, 0.96 * s, 0.17 * s); g.clip();
+    g.translate(0, lw * 2.2);
+    sharkBody(g, s);
+    g.strokeStyle = 'rgba(200,230,255,0.35)'; g.lineWidth = lw * 2; g.stroke();
+    g.restore();
     // gills
     g.strokeStyle = 'rgba(15,25,40,0.45)';
     g.lineWidth = Math.max(0.8, s * 0.006);
@@ -1756,7 +1809,21 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       sg.addColorStop(0, 'rgba(255,255,255,0.28)');
       sg.addColorStop(1, 'rgba(255,255,255,0)');
       g.fillStyle = sg; g.fillRect(0, 0, w, h * 0.12);
+      // sun glow seen through the surface (top, slightly right of centre)
+      var sunX = w * 0.62, sunR = Math.max(w, h) * 0.55;
+      var sun = g.createRadialGradient(sunX, -h * 0.08, 0, sunX, -h * 0.08, sunR);
+      sun.addColorStop(0, 'rgba(255,255,240,' + (L === 2 ? 0.16 : 0.3) + ')');
+      sun.addColorStop(0.35, 'rgba(220,250,255,' + (L === 2 ? 0.06 : 0.12) + ')');
+      sun.addColorStop(1, 'rgba(220,250,255,0)');
+      g.fillStyle = sun; g.fillRect(0, 0, w, h);
     }
+    // depth haze: lighter, desaturated band near the sea floor (atmospheric perspective)
+    var hz = g.createLinearGradient(0, h * 0.55, 0, h);
+    var hzc = L === 5 ? '#FF7A3A' : L === 6 ? '#1A3A6A' : P.far;
+    hz.addColorStop(0, rgba(hzc, 0));
+    hz.addColorStop(0.75, rgba(hzc, L === 6 ? 0.12 : 0.22));
+    hz.addColorStop(1, rgba(hzc, L === 6 ? 0.06 : 0.12));
+    g.fillStyle = hz; g.fillRect(0, h * 0.55, w, h * 0.45);
     // vignette
     var vg = g.createRadialGradient(w / 2, h / 2, Math.min(w, h) * 0.35, w / 2, h / 2, Math.max(w, h) * 0.75);
     vg.addColorStop(0, 'rgba(0,0,0,0)');
@@ -1774,7 +1841,49 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.scale(S, S);
     var wrap = function (cb) { cb(0); cb(-tw); cb(tw); };
     paint(g, tw, h, wrap);
+    c._bands = tileBands(tw, h, paint);
     return bgCache.set(k, c);
+  }
+  // Find the row bands that actually contain pixels (once per cached tile), so each frame only
+  // blends the non-empty part of a full-height parallax layer. The paint is repeated on a small
+  // throwaway canvas and read back there, so the real tile is never read (stays GPU-friendly).
+  function tileBands(tw, h, paint) {
+    var full = [[0, 1]];
+    try {
+      var q = 0.25, sw = Math.max(8, Math.ceil(tw * q)), sh = Math.max(8, Math.ceil(h * q));
+      var sc = mkCanvas(sw, sh), g = sc.getContext('2d');
+      g.scale(q, q);
+      paint(g, tw, h, function (cb) { cb(0); cb(-tw); cb(tw); });
+      var d = g.getImageData(0, 0, sw, sh).data, occ = [], y, x, any = false;
+      for (y = 0; y < sh; y++) {
+        occ[y] = false;
+        for (x = 0; x < sw; x += 2) if (d[(y * sw + x) * 4 + 3] > 1) { occ[y] = any = true; break; }
+      }
+      if (!any) return [];
+      var y0 = 0, y1 = sh - 1;
+      while (!occ[y0]) y0++;
+      while (!occ[y1]) y1--;
+      // largest empty gap inside -> split into two bands when it is worth it
+      var gs = -1, gl = 0, run = 0;
+      for (y = y0; y <= y1; y++) {
+        if (!occ[y]) { run++; if (run > gl) { gl = run; gs = y - run + 1; } } else run = 0;
+      }
+      var pad = 2, bands;
+      if (gl > sh * 0.15) bands = [[y0 - pad, gs + pad], [gs + gl - pad, y1 + 1 + pad]];
+      else bands = [[y0 - pad, y1 + 1 + pad]];
+      return bands.map(function (b) { return [Math.max(0, b[0] / sh), Math.min(1, b[1] / sh)]; });
+    } catch (e) { return full; }
+  }
+  // draw a horizontally repeating tile (only its non-empty row bands)
+  function drawTileRow(ctx, c, scroll, factor, y, tw, th, w) {
+    var bands = c._bands || [[0, 1]];
+    var off = -(((scroll * factor) % tw) + tw) % tw;
+    for (var i = 0; i < bands.length; i++) {
+      var sy = Math.floor(bands[i][0] * c.height), ey = Math.ceil(bands[i][1] * c.height);
+      if (ey <= sy) continue;
+      var k = th / c.height, dy = y + sy * k, dh = (ey - sy) * k;
+      for (var x = off; x < w; x += tw) ctx.drawImage(c, 0, sy, c.width, ey - sy, x, dy, tw, dh);
+    }
   }
 
   function hillsPath(g, tw, h, base, amp, n, rng, phase) {
@@ -2047,6 +2156,243 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     }
   }
 
+  // very distant silhouettes (slowest parallax layer), hazy and blended toward the water colour
+  function paintDeep(L, g, tw, h, wrap) {
+    var P = LEVELS[L];
+    var rng = mulberry(4000 + L);
+    var col = mix(P.far, P.mid, 0.45);
+    var i;
+    g.fillStyle = rgba(col, L === 6 ? 0.5 : 0.42);
+    hillsPath(g, tw, h, h * 0.8, h * 0.2, 4, rng, 2.7 + L); g.fill();
+    switch (L) {
+      case 0: case 1:
+        for (i = 0; i < 5; i++) {
+          (function (x, r) {
+            wrap(function (o) { g.beginPath(); g.ellipse(x + o, h * 0.74, r, r * 0.8, 0, Math.PI, TAU); g.fill(); });
+          })(rng() * tw, h * (0.08 + rng() * 0.08));
+        }
+        break;
+      case 2:
+        for (i = 0; i < 3; i++) {
+          (function (x, ph) {
+            wrap(function (o) {
+              g.fillRect(x + o, h * (0.45 + ph * 0.1), h * 0.012, h * 0.35);
+              g.fillRect(x + o - h * 0.05, h * (0.52 + ph * 0.1), h * 0.11, h * 0.008);
+            });
+          })(rng() * tw, rng());
+        }
+        break;
+      case 3:
+        g.strokeStyle = rgba(col, 0.38); g.lineCap = 'round';
+        for (i = 0; i < 16; i++) {
+          (function (x, hh2, ph, wd) {
+            wrap(function (o) {
+              g.lineWidth = wd;
+              g.beginPath(); g.moveTo(x + o, h);
+              g.bezierCurveTo(x + o + 14 * Math.sin(ph), h - hh2 * 0.4, x + o - 14 * Math.cos(ph), h - hh2 * 0.7, x + o + 6, h - hh2);
+              g.stroke();
+            });
+          })(rng() * tw, h * (0.6 + rng() * 0.4), rng() * 6, 2 + rng() * 2);
+        }
+        break;
+      case 4:
+        for (i = 0; i < 7; i++) {
+          (function (x, sz) {
+            wrap(function (o) { g.beginPath(); g.moveTo(x + o - sz * 0.22, h); g.lineTo(x + o, h - sz); g.lineTo(x + o + sz * 0.22, h); g.closePath(); g.fill(); });
+          })(rng() * tw, h * (0.3 + rng() * 0.3));
+        }
+        break;
+      case 5:
+        for (i = 0; i < 2; i++) {
+          (function (x, vh) {
+            wrap(function (o) {
+              g.fillStyle = rgba(col, 0.55);
+              g.beginPath(); g.moveTo(x + o - vh, h); g.lineTo(x + o - vh * 0.12, h - vh); g.lineTo(x + o + vh * 0.12, h - vh); g.lineTo(x + o + vh, h); g.closePath(); g.fill();
+              var gl = g.createRadialGradient(x + o, h - vh, 0, x + o, h - vh, vh * 0.45);
+              gl.addColorStop(0, 'rgba(255,110,40,0.35)'); gl.addColorStop(1, 'rgba(255,110,40,0)');
+              g.fillStyle = gl; g.fillRect(x + o - vh, h - vh * 1.5, vh * 2, vh);
+            });
+          })(tw * (0.15 + i * 0.5) + rng() * 60, h * (0.28 + rng() * 0.12));
+        }
+        break;
+    }
+  }
+
+  // caustic light net (tileable), drawn additively over the lower part of the scene
+  var causticTile = null;
+  function getCausticTile() {
+    if (causticTile) return causticTile;
+    var tw = 256, th = 96;
+    causticTile = mkCanvas(tw, th);
+    var g = causticTile.getContext('2d');
+    var rng = mulberry(777);
+    g.strokeStyle = '#FFFFFF';
+    g.lineCap = 'round'; g.lineJoin = 'round';
+    // interfering wavy lines (periodic in x) read as a soft caustic net
+    for (var i = 0; i < 11; i++) {
+      var base = (i + 0.5) / 11 * th, a1 = 4 + rng() * 7, a2 = 2 + rng() * 4;
+      var f1 = (1 + Math.floor(rng() * 3)) * TAU / tw, f2 = (3 + Math.floor(rng() * 4)) * TAU / tw;
+      var p1 = rng() * TAU, p2 = rng() * TAU;
+      g.lineWidth = 0.8 + rng() * 1.2;
+      g.globalAlpha = 0.5 + rng() * 0.5;
+      g.beginPath();
+      for (var x = 0; x <= tw; x += 4) {
+        var y = base + Math.sin(x * f1 + p1) * a1 + Math.sin(x * f2 + p2) * a2;
+        if (x) g.lineTo(x, y); else g.moveTo(x, y);
+      }
+      g.stroke();
+    }
+    g.globalAlpha = 1;
+    // fade in from the top of the band so there is no hard edge
+    g.globalCompositeOperation = 'destination-in';
+    var fg = g.createLinearGradient(0, 0, 0, th);
+    fg.addColorStop(0, 'rgba(0,0,0,0)'); fg.addColorStop(0.55, 'rgba(0,0,0,0.7)'); fg.addColorStop(1, 'rgba(0,0,0,1)');
+    g.fillStyle = fg; g.fillRect(0, 0, tw, th);
+    g.globalCompositeOperation = 'source-over';
+    return causticTile;
+  }
+  function drawCaustics(ctx, w, h, scrollX, t, y0, alpha) {
+    var c = getCausticTile();
+    var bandH = h - y0;
+    var tw = 256 * 1.6, th = bandH;
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    for (var p = 0; p < 2; p++) {
+      ctx.globalAlpha = alpha * (p ? 0.8 : 1) * (0.75 + 0.25 * Math.sin(t * (1.1 + p * 0.6) + p * 2));
+      var sp = p ? 0.55 : 0.8;
+      var off = -((((scrollX * sp) + t * (p ? -14 : 9)) % tw) + tw) % tw;
+      var dy = y0 + Math.sin(t * 0.9 + p * 1.7) * 3;
+      for (var x = off; x < w; x += tw) ctx.drawImage(c, x, dy, tw, th);
+    }
+    ctx.restore();
+  }
+
+  // soft out-of-focus disc for near-camera particles
+  var bokehCache = new Cache(8);
+  function bokehSprite(color) {
+    var c = bokehCache.get(color);
+    if (c) return c;
+    c = mkCanvas(64, 64);
+    var g = c.getContext('2d');
+    var gr = g.createRadialGradient(32, 32, 0, 32, 32, 32);
+    gr.addColorStop(0, rgba(color, 0.55));
+    gr.addColorStop(0.6, rgba(color, 0.42));
+    gr.addColorStop(0.85, rgba(color, 0.5));
+    gr.addColorStop(1, rgba(color, 0));
+    g.fillStyle = gr; g.fillRect(0, 0, 64, 64);
+    return bokehCache.set(color, c);
+  }
+
+  // blurred dark silhouettes in front of the playfield, along the bottom edge
+  function paintFore(L, g, tw, fh, wrap) {
+    var P = LEVELS[L];
+    var rng = mulberry(5000 + L);
+    var dark = L === 6 ? '#010309' : mix(P.deep, '#000814', 0.55);
+    var rim = L === 5 ? '#FF7A3A' : L === 6 ? '#4BF2FF' : mix(P.top, '#FFFFFF', 0.3);
+    var i, n = 5;
+    for (i = 0; i < n; i++) {
+      var cx = (i + 0.2 + rng() * 0.6) / n * tw;
+      var sz = fh * (0.55 + rng() * 0.45);
+      (function (cx, sz, r1, r2) {
+        wrap(function (o) {
+          var x = cx + o;
+          g.fillStyle = dark;
+          g.strokeStyle = dark;
+          g.lineCap = 'round';
+          if (L === 0 || L === 3) {
+            // grass / kelp blades
+            for (var b = 0; b < 7; b++) {
+              var bx = x + (b - 3) * sz * 0.13, bh = sz * (0.55 + 0.45 * hash(b + r1 * 9)) * (L === 3 ? 1 : 0.85);
+              g.beginPath(); g.moveTo(bx - sz * 0.05, fh);
+              g.quadraticCurveTo(bx + sz * 0.12 * Math.sin(b + r2 * 6), fh - bh * 0.6, bx + sz * 0.08 * (b - 3) * 0.4, fh - bh);
+              g.quadraticCurveTo(bx + sz * 0.06, fh - bh * 0.5, bx + sz * 0.05, fh);
+              g.fill();
+            }
+          } else if (L === 1) {
+            // coral fan + branches
+            g.lineWidth = Math.max(2, sz * 0.07);
+            var br = function (px, py, len, ang, dep) {
+              if (dep > 3) return;
+              var nx = px + Math.sin(ang) * len, ny = py - Math.cos(ang) * len;
+              g.beginPath(); g.moveTo(px, py); g.lineTo(nx, ny); g.stroke();
+              br(nx, ny, len * 0.68, ang - 0.5, dep + 1); br(nx, ny, len * 0.68, ang + 0.45, dep + 1);
+            };
+            br(x, fh, sz * 0.38, (r1 - 0.5) * 0.4, 0);
+            g.beginPath(); g.ellipse(x + sz * 0.5, fh, sz * 0.35, sz * 0.3, 0, Math.PI, TAU); g.fill();
+          } else if (L === 4) {
+            for (var s = 0; s < 3; s++) {
+              var sx = x + (s - 1) * sz * 0.3, sh = sz * (0.6 + 0.4 * hash(s + r1 * 7));
+              g.beginPath(); g.moveTo(sx - sz * 0.13, fh); g.lineTo(sx + sz * 0.02, fh - sh); g.lineTo(sx + sz * 0.14, fh); g.closePath(); g.fill();
+            }
+          } else {
+            // rocks (wreck, volcano, deep)
+            var rr = mulberry(Math.floor(r1 * 1e6));
+            var pts = blobPoints(sz * 1.3, sz * 0.9, rr, 9, 2.6, 0.25, true, false);
+            g.save(); g.translate(x - sz * 0.65, fh - sz * 0.9);
+            g.beginPath(); smoothPath(g, pts); g.fill();
+            if (L === 2) { g.fillRect(sz * 0.2, -sz * 0.3, sz * 0.08, sz * 0.6); }
+            g.restore();
+            if (L === 5 || L === 6) {
+              g.fillStyle = rgba(rim, 0.55);
+              for (var q = 0; q < 3; q++) { g.beginPath(); g.arc(x + (hash(q + r2 * 5) - 0.5) * sz, fh - sz * (0.15 + hash(q + r1 * 3) * 0.45), 1.2 + hash(q) * 1.5, 0, TAU); g.fill(); }
+              g.fillStyle = dark;
+            }
+          }
+        });
+      })(cx, sz, rng(), rng());
+    }
+    // faint top rim so the silhouettes read as lit from above
+    g.globalCompositeOperation = 'source-atop';
+    var rg = g.createLinearGradient(0, 0, 0, fh);
+    rg.addColorStop(0, rgba(rim, 0.22)); rg.addColorStop(0.5, rgba(rim, 0.04)); rg.addColorStop(1, rgba(rim, 0));
+    g.fillStyle = rg; g.fillRect(0, 0, tw, fh);
+    g.globalCompositeOperation = 'source-over';
+  }
+
+  function drawForeground(ctx, w, h, levelIndex, scrollX, t) {
+    var L = ((levelIndex | 0) % 7 + 7) % 7;
+    var P = LEVELS[L];
+    scrollX = scrollX || 0; t = t || 0;
+    w = Math.ceil(w); h = Math.ceil(h);
+    var S = ctxScale(ctx);
+    ctx.save();
+    // near-camera bokeh motes (few, large, soft)
+    var bc = L === 5 ? '#FF9A4A' : L === 6 ? '#4BF2FF' : L === 2 ? '#C8D8B0' : '#FFFFFF';
+    var bs = bokehSprite(bc);
+    for (var i = 0; i < 6; i++) {
+      var r = h * (0.03 + hash(i * 5 + 3) * 0.05);
+      var span = w + r * 4;
+      var x = ((hash(i * 9 + 1) * span - scrollX * (1.25 + hash(i) * 0.4) + Math.sin(t * 0.5 + i) * 12) % span + span) % span - r * 2;
+      var y = hash(i * 17 + 4) * h * 0.9 + h * 0.05 + Math.sin(t * 0.35 + i * 2) * h * 0.04;
+      ctx.globalAlpha = (L === 6 ? 0.1 : 0.075) * (0.6 + 0.4 * Math.sin(t * 0.8 + i * 1.3));
+      ctx.drawImage(bs, x - r, y - r, r * 2, r * 2);
+    }
+    ctx.globalAlpha = L === 6 ? 0.9 : 0.72;
+    var fh = Math.max(24, Math.round(h * 0.11));
+    var tw = Math.max(w, 600) * 1.3;
+    var fg = makeTile('fore|' + L + '|' + tw + '|' + fh + '|' + S, tw, fh, S, function (g, tw2, h2, wrap) { paintFore(L, g, tw2, h2, wrap); });
+    drawTileRow(ctx, fg, scrollX, 1.45, h - fh + 2, tw, fh, w);
+    ctx.restore();
+  }
+
+  // soft dark ellipse used as a fake contact/drop shadow
+  var blobSpr = null;
+  function drawBlobShadow(ctx, x, y, rw, rh, alpha) {
+    if (!blobSpr) {
+      blobSpr = mkCanvas(64, 32);
+      var g = blobSpr.getContext('2d');
+      g.translate(32, 16); g.scale(1, 0.5);
+      var gr = g.createRadialGradient(0, 0, 0, 0, 0, 32);
+      gr.addColorStop(0, 'rgba(0,8,20,0.75)'); gr.addColorStop(0.5, 'rgba(0,8,20,0.4)'); gr.addColorStop(1, 'rgba(0,8,20,0)');
+      g.fillStyle = gr; g.beginPath(); g.arc(0, 0, 32, 0, TAU); g.fill();
+    }
+    if (alpha <= 0.01) return;
+    var a0 = ctx.globalAlpha;
+    ctx.globalAlpha = a0 * alpha;
+    ctx.drawImage(blobSpr, x - rw, y - rh, rw * 2, rh * 2);
+    ctx.globalAlpha = a0;
+  }
+
   var raySprite = null;
   function getRaySprite() {
     if (raySprite) return raySprite;
@@ -2149,37 +2495,21 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     }
 
     var tw = Math.max(w, 600);
-    var far = makeTile('far|' + L + '|' + tw + '|' + h + '|' + S, tw, h, S, function (g, tw2, h2, wrap) { paintFar(L, g, tw2, h2, wrap); });
-    var off = -(((scrollX * 0.12) % tw) + tw) % tw;
-    ctx.drawImage(far, off, 0, tw, h);
-    ctx.drawImage(far, off + tw, 0, tw, h);
-    if (off + 2 * tw < w) ctx.drawImage(far, off + 2 * tw, 0, tw, h);
-
+    // parallax: far (hazy distant silhouettes baked behind it, 0.12), mid (0.35), floor (1.0); only non-empty rows are blended
+    var far = makeTile('far|' + L + '|' + tw + '|' + h + '|' + S, tw, h, S, function (g, tw2, h2, wrap) { paintDeep(L, g, tw2, h2, wrap); paintFar(L, g, tw2, h2, wrap); });
+    drawTileRow(ctx, far, scrollX, 0.12, 0, tw, h, w);
     var mid = makeTile('mid|' + L + '|' + tw + '|' + h + '|' + S, tw, h, S, function (g, tw2, h2, wrap) { paintMid(L, g, tw2, h2, wrap); });
-    off = -(((scrollX * 0.35) % tw) + tw) % tw;
-    ctx.drawImage(mid, off, 0, tw, h);
-    ctx.drawImage(mid, off + tw, 0, tw, h);
-    if (off + 2 * tw < w) ctx.drawImage(mid, off + 2 * tw, 0, tw, h);
+    drawTileRow(ctx, mid, scrollX, 0.35, 0, tw, h, w);
 
     drawParticles(ctx, w, h, L, scrollX, t);
 
     // floor strip (moves with the world)
     var fh = Math.max(14, Math.round(h * 0.055));
     var fl = makeTile('floor|' + L + '|' + tw + '|' + fh + '|' + S, tw, fh, S, function (g, tw2, h2, wrap) { paintFloor(L, g, tw2, h2, wrap); });
-    off = -(((scrollX) % tw) + tw) % tw;
-    ctx.drawImage(fl, off, h - fh, tw, fh);
-    ctx.drawImage(fl, off + tw, h - fh, tw, fh);
-    if (off + 2 * tw < w) ctx.drawImage(fl, off + 2 * tw, h - fh, tw, fh);
+    drawTileRow(ctx, fl, scrollX, 1, h - fh, tw, fh, w);
 
-    // caustic shimmer on lagoon / ice floor
-    if (L === 0 || L === 4 || L === 3) {
-      ctx.globalCompositeOperation = 'lighter';
-      for (i = 0; i < 6; i++) {
-        var cx = ((hash(i + 17) * w - scrollX * 0.9 + Math.sin(t * 0.7 + i) * 20) % w + w) % w;
-        drawGlow(ctx, cx, h - fh * 0.5, fh * 1.6, '#FFFFFF', 0.12 + 0.08 * Math.sin(t * 1.3 + i));
-      }
-      ctx.globalCompositeOperation = 'source-over';
-    }
+    // moving caustic light net over the lower scene and floor (sunlit levels)
+    if (L === 0 || L === 1 || L === 4) drawCaustics(ctx, w, h, scrollX, t, h * 0.83, L === 4 ? 0.2 : 0.17);
     ctx.restore();
   }
 
@@ -2808,6 +3138,19 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     var fn = OBST[kind] || OBST.rock;
     var extra = null;
     if (kind !== 'jelly') extra = fn(g, w, h, mulberry(seedNum(seed) + w * 7 + h * 13)) || null;
+    if (kind !== 'jelly' && kind !== 'bubbles') {
+      // baked top-down light: brighter crown, ambient occlusion toward the base (cached, free per frame)
+      g.save();
+      g.globalCompositeOperation = 'source-atop';
+      var lg = g.createLinearGradient(0, -OB_PAD, 0, h + OB_PAD);
+      lg.addColorStop(0, 'rgba(255,250,235,0.16)');
+      lg.addColorStop(0.3, 'rgba(255,255,255,0)');
+      lg.addColorStop(0.7, 'rgba(0,0,0,0)');
+      lg.addColorStop(1, 'rgba(0,6,24,0.3)');
+      g.fillStyle = lg;
+      g.fillRect(-OB_PAD, -OB_PAD, w + OB_PAD * 2, h + OB_PAD * 2);
+      g.restore();
+    }
     e = { c: c, extra: extra };
     return obCache.set(key, e);
   }
@@ -2865,6 +3208,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     var S = ctxScale(ctx);
     var e = obEntry(kind, w, h, seed, S);
     var sx = ob.w / w, sy = ob.h / h;
+    if (ob.from === 'bottom' && curLevel !== 6) drawBlobShadow(ctx, x + ob.w / 2, y + ob.h - 1, ob.w * 0.62, Math.max(4, ob.h * 0.06), 0.55);
     ctx.save();
     var sway = 0;
     if (kind === 'seagrass' || kind === 'kelp' || kind === 'kelpTop') sway = Math.sin(t * 1.6 + sd * 20) * 0.05;
@@ -3078,12 +3422,19 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     ctx.lineCap = 'round';
     ctx.beginPath(); ctx.arc(x, y, r * 1.22, t * 2.5, t * 2.5 + 1.1); ctx.stroke();
     ctx.beginPath(); ctx.arc(x, y, r * 1.22, t * 2.5 + Math.PI, t * 2.5 + Math.PI + 0.6); ctx.stroke();
+    // expanding "ping" ring that draws the eye to the pickup
+    var pk = (t * 0.8) % 1;
+    ctx.globalAlpha *= (1 - pk) * 0.7;
+    ctx.strokeStyle = col;
+    ctx.lineWidth = Math.max(1, r * 0.07 * (1 - pk) + 0.5);
+    ctx.beginPath(); ctx.arc(x, y, r * (1.1 + pk * 0.9), 0, TAU); ctx.stroke();
     ctx.restore();
   }
 
   function drawShield(ctx, x, y, r, t) {
     t = t || 0;
     ctx.save();
+    drawGlow(ctx, x, y, r * 1.5, '#6FB3FF', 0.22 + 0.06 * Math.sin(t * 3));
     var gr = ctx.createRadialGradient(x, y, r * 0.55, x, y, r);
     gr.addColorStop(0, 'rgba(111,179,255,0)');
     gr.addColorStop(0.8, 'rgba(111,179,255,0.18)');
@@ -3216,7 +3567,11 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     drawShield: drawShield,
     drawInkCloud: function (ctx, x, y, r, t) { drawInkCloud(ctx, x, y, r, t, false); },
     drawBubble: drawBubble,
-    fishIconDataURL: fishIconDataURL
+    fishIconDataURL: fishIconDataURL,
+    // extras (optional for game.js; guarded there)
+    drawForeground: drawForeground,
+    drawBlobShadow: drawBlobShadow,
+    drawGlow: drawGlow
   };
 })();
 
@@ -4335,6 +4690,13 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
   function sparks(x, y, color, n) {
     for (var i = 0; i < n; i++) { var a = rand(0, 6.28), s = rand(60, 180); G.parts.push({ k: 's', x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, r: rand(1.5, 3), life: rand(0.3, 0.6), max: 0.6, c: color }); }
   }
+  // rent visuella effekter: expanderande ring och ljusblixt (påverkar inte spelet)
+  function ring(x, y, color, r0, grow, life, lw) {
+    G.parts.push({ k: 'ring', x: x, y: y, vx: 0, vy: 0, r: r0, grow: grow, lw: lw || 3, life: life || 0.45, max: life || 0.45, c: color });
+  }
+  function flash(x, y, color, r, life) {
+    G.parts.push({ k: 'flash', x: x, y: y, vx: 0, vy: 0, r: r, life: life || 0.2, max: life || 0.2, c: color });
+  }
   function shake(amp, t) { G.shakeAmp = Math.max(G.shakeAmp, amp); G.shakeT = Math.max(G.shakeT, t); }
 
   /* ---------- nedräkning ---------- */
@@ -4409,6 +4771,8 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     var bonus = 250 * L + (g.crashes === 0 ? 300 : 0);
     g.score += bonus;
     floatText(W / 2, playTop + playH * 0.4, 'LEVEL-BONUS +' + fmt(bonus), '#FFC83D', 28, 1.6);
+    ring(fishX, g.fishY, '#FFC83D', fishLen * 0.4, fishLen * 2.4, 0.8, 4);
+    sparks(fishX, g.fishY, '#FFE08A', 18);
     sfx('levelup');
     safe(function () { Sfx.stopMusic(); });
     var stars = g.crashes === 0 ? 3 : g.crashes <= 2 ? 2 : 1;
@@ -4444,6 +4808,8 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       sfx('shield');
       floatText(fishX, g.fishY - fishLen * 0.6, 'Skölden höll!', '#6FB3FF', 20);
       bubbles(fishX, g.fishY, 10, fishLen * 0.4);
+      ring(fishX, g.fishY, '#6FB3FF', fishLen * 0.6, fishLen * 1.4, 0.5, 4);
+      sparks(fishX, g.fishY, '#BFE0FF', 12);
       g.fishVY = (g.fishY < obMid ? -1 : 1) * vMax() * 0.5;
       shake(4, 0.15);
       return;
@@ -4459,6 +4825,10 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     safe(function () { if (navigator.vibrate) navigator.vibrate(70); });
     floatText(fishX, g.fishY - fishLen * 0.6, '−' + fmt1(c.pen) + ' m', '#FF5A5F', 24);
     bubbles(fishX + fishLen * 0.3, g.fishY, 12, fishLen * 0.3);
+    var hx = fishX + fishLen * 0.4, hy = clamp(g.fishY, ob.y, ob.y + ob.h);
+    flash(hx, hy, '#FFE6C8', fishLen * 1.1, 0.22);
+    ring(hx, hy, '#FF8A5F', fishLen * 0.2, fishLen * 1.1, 0.4, 4);
+    sparks(hx, hy, '#FFC07A', 10);
   }
   function collectPearl(p) {
     var g = G;
@@ -4468,6 +4838,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.score += pts;
     sfx('pearl');
     sparks(p.sx, p.y, '#FFFFFF', 6);
+    ring(p.sx, p.y, sm > 1 ? '#FFC83D' : '#FFF0FA', p.r, p.r * 2.6, 0.3, 2);
     floatText(p.sx, p.y - 10, '+' + pts, sm > 1 ? '#FFC83D' : '#EAF4FF', 16, 0.8);
     if (g.streak === 10 || g.streak === 25) {
       floatText(fishX, playTop + playH * 0.25, 'SERIE ×' + sm, '#FFC83D', 30, 1.3);
@@ -4479,6 +4850,9 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.fx[p.type] = PU_DUR[p.type];
     sfx(p.type);
     sparks(p.sx, p.y, PU_COL[p.type], 14);
+    flash(p.sx, p.y, PU_COL[p.type], puR * 3.2, 0.3);
+    ring(p.sx, p.y, PU_COL[p.type], puR, puR * 3.5, 0.55, 5);
+    ring(fishX, g.fishY, PU_COL[p.type], fishLen * 0.3, fishLen * 1.6, 0.7, 3);
     floatText(fishX, g.fishY - fishLen * 0.7, PU_NAME[p.type], PU_COL[p.type], 24, 1.1);
     if (p.type === 'ink') g.inkJet = 0.5; // bläckstråle från fisken bakåt mot hajen
   }
@@ -4489,6 +4863,8 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     g.score += 50;
     sfx('sharkCrash');
     shake(5, 0.2);
+    var smx = (g.shark.mouthX != null ? g.shark.mouthX : fishX - g.gap * ppm);
+    if (smx > 0) { ring(smx, g.shark.y, '#FFC83D', sharkLen * 0.08, sharkLen * 0.35, 0.5, 4); sparks(smx, g.shark.y, '#FFE08A', 10); }
     floatText(Math.max(W * 0.3, fishX), playTop + playH * 0.26, 'Hajen krockade! +50', '#FFC83D', 22, 1.4);
   }
 
@@ -4887,6 +5263,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     if (cx + sharkLen * 0.6 < 0) return;
     var mouth = clamp(1 - g.gap / 3, 0, 1);
     var ang = Math.sin(s.spin) * (s.dizzy > 0 ? 0.6 : 0) + clamp((g.fishY - s.y) / playH, -0.3, 0.3) * 0.6;
+    floorShadow(cx, s.y, sharkLen * 0.4, 0.5);
     ctx.save(); ctx.globalAlpha = alpha;
     safe(function () { Art.drawShark(ctx, cx, s.y, sharkLen, time, { mouth: mouth, angle: ang, inked: g.fx.ink > 0, dizzy: s.dizzy > 0 }); });
     ctx.restore();
@@ -4909,10 +5286,66 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     }
     ctx.restore();
   }
+  // mjuk skugga på havsbotten under fisk/haj (svagare ju högre upp)
+  function floorShadow(x, y, rw, a) {
+    if (!Art.drawBlobShadow || envIndex(G) === 6) return;
+    var fh = Math.max(14, Math.round(H * 0.055));
+    var d = clamp((H - y) / playH, 0, 1);
+    var k = Math.pow(1 - d, 1.6);
+    if (k < 0.04) return;
+    safe(function () { Art.drawBlobShadow(ctx, x, H - fh * 0.45, rw * (0.55 + 0.45 * k), fh * 0.3 * (0.6 + 0.4 * k), a * k); });
+  }
+  // kölvatten bakom fisken (renderingshistorik, inte spellogik)
+  var wake = [];
+  function drawWake(time) {
+    var g = G;
+    var last = wake[wake.length - 1];
+    if (last && g.scroll < last.s) wake.length = 0;
+    if (!last || g.scroll - last.s > 5 || !wake.length) wake.push({ y: g.fishY, s: g.scroll });
+    while (wake.length > 22) wake.shift();
+    if (wake.length < 3) return;
+    var turbo = g.fx.turbo > 0;
+    var x0 = fishX - fishLen * 0.42;
+    var maxW = fishH * (turbo ? 0.34 : 0.22);
+    var maxLen = fishLen * (turbo ? 1.5 : 0.9);
+    var n = wake.length, i, p, x, k, top = [], bot = [];
+    for (i = n - 1; i >= 0; i--) {
+      p = wake[i]; x = x0 - (g.scroll - p.s);
+      k = Math.min(1, (x0 - x) / maxLen);
+      if (k >= 1 && top.length > 2) break;
+      var wv = maxW * (0.35 + 0.65 * Math.sin(Math.min(1, k * 1.6) * Math.PI * 0.5)) * (1 - k * 0.6);
+      var yy = p.y + Math.sin(k * 6 - time * 8) * fishH * 0.05 * k;
+      top.push([x, yy - wv]); bot.push([x, yy + wv]);
+    }
+    var xe = top[top.length - 1][0];
+    if (x0 - xe < 8) return;
+    ctx.save();
+    var gr = ctx.createLinearGradient(x0, 0, xe, 0);
+    var c = turbo ? '60,224,180' : '220,245,255';
+    gr.addColorStop(0, 'rgba(' + c + ',' + (turbo ? 0.4 : 0.13) + ')');
+    gr.addColorStop(1, 'rgba(' + c + ',0)');
+    ctx.fillStyle = gr;
+    if (turbo) ctx.globalCompositeOperation = 'lighter';
+    ctx.beginPath();
+    ctx.moveTo(top[0][0], top[0][1]);
+    for (i = 1; i < top.length; i++) ctx.lineTo(top[i][0], top[i][1]);
+    for (i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   function drawFishNow(time) {
     var g = G;
     var flash = g.flashT > 0 && Math.floor(g.flashT * 12) % 2 === 0;
     var alpha = g.invulT > 0 ? (Math.floor(g.invulT * 14) % 2 ? 0.45 : 1) : 1;
+    var li = envIndex(g);
+    floorShadow(fishX, g.fishY, fishLen * 0.42, 0.55);
+    drawWake(time);
+    if (Art.drawGlow) {
+      // mörk halo bakom fisken för tydlig silhuett, och färgad aura när en power-up är aktiv
+      if (li !== 6) safe(function () { Art.drawGlow(ctx, fishX, g.fishY, fishLen * 0.8, '#001428', li === 4 ? 0.3 : 0.22); });
+      var auraC = g.fx.turbo > 0 ? PU_COL.turbo : g.fx.magnet > 0 ? PU_COL.magnet : g.fx.ink > 0 ? PU_COL.ink : null;
+      if (auraC) safe(function () { Art.drawGlow(ctx, fishX, g.fishY, fishLen * (0.95 + 0.08 * Math.sin(time * 7)), auraC, 0.32); });
+    }
     safe(function () { Art.drawFish(ctx, fishX, g.fishY, fishLen, prof.fish, time * (g.fx.turbo > 0 ? 1.6 : 1), { angle: g.tilt, alpha: alpha, flash: flash, part: 'whole' }); });
     if (g.fx.shield > 0) {
       var a = g.fx.shield < 1.5 ? (Math.floor(g.fx.shield * 8) % 2 ? 0.4 : 1) : 1;
@@ -4921,22 +5354,55 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       ctx.restore();
     }
     if (g.fx.magnet > 0) {
-      ctx.save(); ctx.strokeStyle = 'rgba(255,200,61,' + (0.18 + 0.1 * Math.sin(time * 8)) + ')'; ctx.lineWidth = 2; ctx.setLineDash([6, 8]);
-      ctx.beginPath(); ctx.arc(fishX, g.fishY, W * 0.3 * (0.6 + 0.4 * ((time * 0.8) % 1)), 0, 6.283); ctx.stroke(); ctx.restore();
+      // magnetfält: guldringar som dras in mot fisken
+      ctx.save(); ctx.strokeStyle = PU_COL.magnet; ctx.lineCap = 'round';
+      var fade = Math.min(1, g.fx.magnet / 0.6);
+      for (var mi = 0; mi < 2; mi++) {
+        var mp = 1 - ((time * 0.9 + mi * 0.5) % 1);
+        ctx.globalAlpha = fade * 0.24 * Math.sin(mp * Math.PI);
+        ctx.lineWidth = 1.5 + 2 * (1 - mp);
+        ctx.beginPath(); ctx.arc(fishX, g.fishY, W * 0.3 * (0.22 + 0.78 * mp), 0, 6.283); ctx.stroke();
+      }
+      ctx.restore();
     }
   }
   function drawParts() {
-    var g = G;
+    var g = G, add = [];
     g.parts.forEach(function (p) {
       var a = clamp(p.life / p.max, 0, 1);
       if (p.k === 'b') safe(function () { Art.drawBubble(ctx, p.x, p.y, p.r, a * 0.8); });
-      else { ctx.globalAlpha = a; ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); ctx.globalAlpha = 1; }
+      else add.push(p);
     });
+    if (!add.length) return;
+    // gnistor, ringar och blixtar ritas additivt (glöd)
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    add.forEach(function (p) {
+      var a = clamp(p.life / p.max, 0, 1);
+      if (p.k === 'ring') {
+        var u = 1 - a, rr = p.r + p.grow * (1 - Math.pow(1 - u, 3));
+        ctx.globalAlpha = a * 0.9; ctx.strokeStyle = p.c; ctx.lineWidth = Math.max(0.8, p.lw * a);
+        ctx.beginPath(); ctx.arc(p.x, p.y, rr, 0, 6.283); ctx.stroke();
+      } else if (p.k === 'flash') {
+        if (Art.drawGlow) safe(function () { Art.drawGlow(ctx, p.x, p.y, p.r * (0.6 + 0.4 * (1 - a)), p.c, a * 0.85); });
+      } else {
+        ctx.globalAlpha = a; ctx.strokeStyle = p.c; ctx.lineWidth = p.r * 1.3;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.045, p.y - p.vy * 0.045); ctx.stroke();
+      }
+    });
+    ctx.restore();
   }
   function drawLines() {
     var g = G; if (!g.lines.length) return;
-    ctx.save(); ctx.strokeStyle = 'rgba(234,244,255,0.35)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-    g.lines.forEach(function (l) { ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x + l.l, l.y); ctx.stroke(); });
+    ctx.save(); ctx.lineCap = 'round'; ctx.globalCompositeOperation = 'lighter';
+    g.lines.forEach(function (l, i) {
+      var gr = ctx.createLinearGradient(l.x, 0, l.x + l.l, 0);
+      var c = i % 3 === 0 ? '60,224,180' : '234,244,255';
+      gr.addColorStop(0, 'rgba(' + c + ',0.55)'); gr.addColorStop(1, 'rgba(' + c + ',0)');
+      ctx.strokeStyle = gr; ctx.lineWidth = i % 3 === 0 ? 2.5 : 1.6;
+      ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x + l.l, l.y); ctx.stroke();
+    });
     ctx.restore();
   }
   function drawTexts() {
@@ -5085,6 +5551,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
     if (!G || current !== 's-game') {
       // menybakgrund
       safe(function () { Art.drawBackground(ctx, W, H, 0, time * 40, time); });
+      if (Art.drawForeground) safe(function () { Art.drawForeground(ctx, W, H, 0, time * 40, time); });
       return;
     }
     var g = G;
@@ -5097,6 +5564,7 @@ label.field{display:block;font-weight:600;font-size:14px;margin-bottom:6px;color
       ctx.translate(e.fx0, e.fy0); ctx.scale(z, z); ctx.translate(-e.fx0, -e.fy0);
     }
     drawWorld(time);
+    if (Art.drawForeground) safe(function () { Art.drawForeground(ctx, W, H, envIndex(g), g.scroll, time); });
     if (SHOW_HIT && g.mode !== 'eaten') drawHitboxes();
     drawTexts();
     ctx.restore();

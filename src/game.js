@@ -627,6 +627,13 @@
   function sparks(x, y, color, n) {
     for (var i = 0; i < n; i++) { var a = rand(0, 6.28), s = rand(60, 180); G.parts.push({ k: 's', x: x, y: y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, r: rand(1.5, 3), life: rand(0.3, 0.6), max: 0.6, c: color }); }
   }
+  // rent visuella effekter: expanderande ring och ljusblixt (påverkar inte spelet)
+  function ring(x, y, color, r0, grow, life, lw) {
+    G.parts.push({ k: 'ring', x: x, y: y, vx: 0, vy: 0, r: r0, grow: grow, lw: lw || 3, life: life || 0.45, max: life || 0.45, c: color });
+  }
+  function flash(x, y, color, r, life) {
+    G.parts.push({ k: 'flash', x: x, y: y, vx: 0, vy: 0, r: r, life: life || 0.2, max: life || 0.2, c: color });
+  }
   function shake(amp, t) { G.shakeAmp = Math.max(G.shakeAmp, amp); G.shakeT = Math.max(G.shakeT, t); }
 
   /* ---------- nedräkning ---------- */
@@ -701,6 +708,8 @@
     var bonus = 250 * L + (g.crashes === 0 ? 300 : 0);
     g.score += bonus;
     floatText(W / 2, playTop + playH * 0.4, 'LEVEL-BONUS +' + fmt(bonus), '#FFC83D', 28, 1.6);
+    ring(fishX, g.fishY, '#FFC83D', fishLen * 0.4, fishLen * 2.4, 0.8, 4);
+    sparks(fishX, g.fishY, '#FFE08A', 18);
     sfx('levelup');
     safe(function () { Sfx.stopMusic(); });
     var stars = g.crashes === 0 ? 3 : g.crashes <= 2 ? 2 : 1;
@@ -736,6 +745,8 @@
       sfx('shield');
       floatText(fishX, g.fishY - fishLen * 0.6, 'Skölden höll!', '#6FB3FF', 20);
       bubbles(fishX, g.fishY, 10, fishLen * 0.4);
+      ring(fishX, g.fishY, '#6FB3FF', fishLen * 0.6, fishLen * 1.4, 0.5, 4);
+      sparks(fishX, g.fishY, '#BFE0FF', 12);
       g.fishVY = (g.fishY < obMid ? -1 : 1) * vMax() * 0.5;
       shake(4, 0.15);
       return;
@@ -751,6 +762,10 @@
     safe(function () { if (navigator.vibrate) navigator.vibrate(70); });
     floatText(fishX, g.fishY - fishLen * 0.6, '−' + fmt1(c.pen) + ' m', '#FF5A5F', 24);
     bubbles(fishX + fishLen * 0.3, g.fishY, 12, fishLen * 0.3);
+    var hx = fishX + fishLen * 0.4, hy = clamp(g.fishY, ob.y, ob.y + ob.h);
+    flash(hx, hy, '#FFE6C8', fishLen * 1.1, 0.22);
+    ring(hx, hy, '#FF8A5F', fishLen * 0.2, fishLen * 1.1, 0.4, 4);
+    sparks(hx, hy, '#FFC07A', 10);
   }
   function collectPearl(p) {
     var g = G;
@@ -760,6 +775,7 @@
     g.score += pts;
     sfx('pearl');
     sparks(p.sx, p.y, '#FFFFFF', 6);
+    ring(p.sx, p.y, sm > 1 ? '#FFC83D' : '#FFF0FA', p.r, p.r * 2.6, 0.3, 2);
     floatText(p.sx, p.y - 10, '+' + pts, sm > 1 ? '#FFC83D' : '#EAF4FF', 16, 0.8);
     if (g.streak === 10 || g.streak === 25) {
       floatText(fishX, playTop + playH * 0.25, 'SERIE ×' + sm, '#FFC83D', 30, 1.3);
@@ -771,6 +787,9 @@
     g.fx[p.type] = PU_DUR[p.type];
     sfx(p.type);
     sparks(p.sx, p.y, PU_COL[p.type], 14);
+    flash(p.sx, p.y, PU_COL[p.type], puR * 3.2, 0.3);
+    ring(p.sx, p.y, PU_COL[p.type], puR, puR * 3.5, 0.55, 5);
+    ring(fishX, g.fishY, PU_COL[p.type], fishLen * 0.3, fishLen * 1.6, 0.7, 3);
     floatText(fishX, g.fishY - fishLen * 0.7, PU_NAME[p.type], PU_COL[p.type], 24, 1.1);
     if (p.type === 'ink') g.inkJet = 0.5; // bläckstråle från fisken bakåt mot hajen
   }
@@ -781,6 +800,8 @@
     g.score += 50;
     sfx('sharkCrash');
     shake(5, 0.2);
+    var smx = (g.shark.mouthX != null ? g.shark.mouthX : fishX - g.gap * ppm);
+    if (smx > 0) { ring(smx, g.shark.y, '#FFC83D', sharkLen * 0.08, sharkLen * 0.35, 0.5, 4); sparks(smx, g.shark.y, '#FFE08A', 10); }
     floatText(Math.max(W * 0.3, fishX), playTop + playH * 0.26, 'Hajen krockade! +50', '#FFC83D', 22, 1.4);
   }
 
@@ -1179,6 +1200,7 @@
     if (cx + sharkLen * 0.6 < 0) return;
     var mouth = clamp(1 - g.gap / 3, 0, 1);
     var ang = Math.sin(s.spin) * (s.dizzy > 0 ? 0.6 : 0) + clamp((g.fishY - s.y) / playH, -0.3, 0.3) * 0.6;
+    floorShadow(cx, s.y, sharkLen * 0.4, 0.5);
     ctx.save(); ctx.globalAlpha = alpha;
     safe(function () { Art.drawShark(ctx, cx, s.y, sharkLen, time, { mouth: mouth, angle: ang, inked: g.fx.ink > 0, dizzy: s.dizzy > 0 }); });
     ctx.restore();
@@ -1201,10 +1223,66 @@
     }
     ctx.restore();
   }
+  // mjuk skugga på havsbotten under fisk/haj (svagare ju högre upp)
+  function floorShadow(x, y, rw, a) {
+    if (!Art.drawBlobShadow || envIndex(G) === 6) return;
+    var fh = Math.max(14, Math.round(H * 0.055));
+    var d = clamp((H - y) / playH, 0, 1);
+    var k = Math.pow(1 - d, 1.6);
+    if (k < 0.04) return;
+    safe(function () { Art.drawBlobShadow(ctx, x, H - fh * 0.45, rw * (0.55 + 0.45 * k), fh * 0.3 * (0.6 + 0.4 * k), a * k); });
+  }
+  // kölvatten bakom fisken (renderingshistorik, inte spellogik)
+  var wake = [];
+  function drawWake(time) {
+    var g = G;
+    var last = wake[wake.length - 1];
+    if (last && g.scroll < last.s) wake.length = 0;
+    if (!last || g.scroll - last.s > 5 || !wake.length) wake.push({ y: g.fishY, s: g.scroll });
+    while (wake.length > 22) wake.shift();
+    if (wake.length < 3) return;
+    var turbo = g.fx.turbo > 0;
+    var x0 = fishX - fishLen * 0.42;
+    var maxW = fishH * (turbo ? 0.34 : 0.22);
+    var maxLen = fishLen * (turbo ? 1.5 : 0.9);
+    var n = wake.length, i, p, x, k, top = [], bot = [];
+    for (i = n - 1; i >= 0; i--) {
+      p = wake[i]; x = x0 - (g.scroll - p.s);
+      k = Math.min(1, (x0 - x) / maxLen);
+      if (k >= 1 && top.length > 2) break;
+      var wv = maxW * (0.35 + 0.65 * Math.sin(Math.min(1, k * 1.6) * Math.PI * 0.5)) * (1 - k * 0.6);
+      var yy = p.y + Math.sin(k * 6 - time * 8) * fishH * 0.05 * k;
+      top.push([x, yy - wv]); bot.push([x, yy + wv]);
+    }
+    var xe = top[top.length - 1][0];
+    if (x0 - xe < 8) return;
+    ctx.save();
+    var gr = ctx.createLinearGradient(x0, 0, xe, 0);
+    var c = turbo ? '60,224,180' : '220,245,255';
+    gr.addColorStop(0, 'rgba(' + c + ',' + (turbo ? 0.4 : 0.13) + ')');
+    gr.addColorStop(1, 'rgba(' + c + ',0)');
+    ctx.fillStyle = gr;
+    if (turbo) ctx.globalCompositeOperation = 'lighter';
+    ctx.beginPath();
+    ctx.moveTo(top[0][0], top[0][1]);
+    for (i = 1; i < top.length; i++) ctx.lineTo(top[i][0], top[i][1]);
+    for (i = bot.length - 1; i >= 0; i--) ctx.lineTo(bot[i][0], bot[i][1]);
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
   function drawFishNow(time) {
     var g = G;
     var flash = g.flashT > 0 && Math.floor(g.flashT * 12) % 2 === 0;
     var alpha = g.invulT > 0 ? (Math.floor(g.invulT * 14) % 2 ? 0.45 : 1) : 1;
+    var li = envIndex(g);
+    floorShadow(fishX, g.fishY, fishLen * 0.42, 0.55);
+    drawWake(time);
+    if (Art.drawGlow) {
+      // mörk halo bakom fisken för tydlig silhuett, och färgad aura när en power-up är aktiv
+      if (li !== 6) safe(function () { Art.drawGlow(ctx, fishX, g.fishY, fishLen * 0.8, '#001428', li === 4 ? 0.3 : 0.22); });
+      var auraC = g.fx.turbo > 0 ? PU_COL.turbo : g.fx.magnet > 0 ? PU_COL.magnet : g.fx.ink > 0 ? PU_COL.ink : null;
+      if (auraC) safe(function () { Art.drawGlow(ctx, fishX, g.fishY, fishLen * (0.95 + 0.08 * Math.sin(time * 7)), auraC, 0.32); });
+    }
     safe(function () { Art.drawFish(ctx, fishX, g.fishY, fishLen, prof.fish, time * (g.fx.turbo > 0 ? 1.6 : 1), { angle: g.tilt, alpha: alpha, flash: flash, part: 'whole' }); });
     if (g.fx.shield > 0) {
       var a = g.fx.shield < 1.5 ? (Math.floor(g.fx.shield * 8) % 2 ? 0.4 : 1) : 1;
@@ -1213,22 +1291,55 @@
       ctx.restore();
     }
     if (g.fx.magnet > 0) {
-      ctx.save(); ctx.strokeStyle = 'rgba(255,200,61,' + (0.18 + 0.1 * Math.sin(time * 8)) + ')'; ctx.lineWidth = 2; ctx.setLineDash([6, 8]);
-      ctx.beginPath(); ctx.arc(fishX, g.fishY, W * 0.3 * (0.6 + 0.4 * ((time * 0.8) % 1)), 0, 6.283); ctx.stroke(); ctx.restore();
+      // magnetfält: guldringar som dras in mot fisken
+      ctx.save(); ctx.strokeStyle = PU_COL.magnet; ctx.lineCap = 'round';
+      var fade = Math.min(1, g.fx.magnet / 0.6);
+      for (var mi = 0; mi < 2; mi++) {
+        var mp = 1 - ((time * 0.9 + mi * 0.5) % 1);
+        ctx.globalAlpha = fade * 0.24 * Math.sin(mp * Math.PI);
+        ctx.lineWidth = 1.5 + 2 * (1 - mp);
+        ctx.beginPath(); ctx.arc(fishX, g.fishY, W * 0.3 * (0.22 + 0.78 * mp), 0, 6.283); ctx.stroke();
+      }
+      ctx.restore();
     }
   }
   function drawParts() {
-    var g = G;
+    var g = G, add = [];
     g.parts.forEach(function (p) {
       var a = clamp(p.life / p.max, 0, 1);
       if (p.k === 'b') safe(function () { Art.drawBubble(ctx, p.x, p.y, p.r, a * 0.8); });
-      else { ctx.globalAlpha = a; ctx.fillStyle = p.c; ctx.beginPath(); ctx.arc(p.x, p.y, p.r, 0, 6.283); ctx.fill(); ctx.globalAlpha = 1; }
+      else add.push(p);
     });
+    if (!add.length) return;
+    // gnistor, ringar och blixtar ritas additivt (glöd)
+    ctx.save();
+    ctx.globalCompositeOperation = 'lighter';
+    ctx.lineCap = 'round';
+    add.forEach(function (p) {
+      var a = clamp(p.life / p.max, 0, 1);
+      if (p.k === 'ring') {
+        var u = 1 - a, rr = p.r + p.grow * (1 - Math.pow(1 - u, 3));
+        ctx.globalAlpha = a * 0.9; ctx.strokeStyle = p.c; ctx.lineWidth = Math.max(0.8, p.lw * a);
+        ctx.beginPath(); ctx.arc(p.x, p.y, rr, 0, 6.283); ctx.stroke();
+      } else if (p.k === 'flash') {
+        if (Art.drawGlow) safe(function () { Art.drawGlow(ctx, p.x, p.y, p.r * (0.6 + 0.4 * (1 - a)), p.c, a * 0.85); });
+      } else {
+        ctx.globalAlpha = a; ctx.strokeStyle = p.c; ctx.lineWidth = p.r * 1.3;
+        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p.x - p.vx * 0.045, p.y - p.vy * 0.045); ctx.stroke();
+      }
+    });
+    ctx.restore();
   }
   function drawLines() {
     var g = G; if (!g.lines.length) return;
-    ctx.save(); ctx.strokeStyle = 'rgba(234,244,255,0.35)'; ctx.lineWidth = 2; ctx.lineCap = 'round';
-    g.lines.forEach(function (l) { ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x + l.l, l.y); ctx.stroke(); });
+    ctx.save(); ctx.lineCap = 'round'; ctx.globalCompositeOperation = 'lighter';
+    g.lines.forEach(function (l, i) {
+      var gr = ctx.createLinearGradient(l.x, 0, l.x + l.l, 0);
+      var c = i % 3 === 0 ? '60,224,180' : '234,244,255';
+      gr.addColorStop(0, 'rgba(' + c + ',0.55)'); gr.addColorStop(1, 'rgba(' + c + ',0)');
+      ctx.strokeStyle = gr; ctx.lineWidth = i % 3 === 0 ? 2.5 : 1.6;
+      ctx.beginPath(); ctx.moveTo(l.x, l.y); ctx.lineTo(l.x + l.l, l.y); ctx.stroke();
+    });
     ctx.restore();
   }
   function drawTexts() {
@@ -1377,6 +1488,7 @@
     if (!G || current !== 's-game') {
       // menybakgrund
       safe(function () { Art.drawBackground(ctx, W, H, 0, time * 40, time); });
+      if (Art.drawForeground) safe(function () { Art.drawForeground(ctx, W, H, 0, time * 40, time); });
       return;
     }
     var g = G;
@@ -1389,6 +1501,7 @@
       ctx.translate(e.fx0, e.fy0); ctx.scale(z, z); ctx.translate(-e.fx0, -e.fy0);
     }
     drawWorld(time);
+    if (Art.drawForeground) safe(function () { Art.drawForeground(ctx, W, H, envIndex(g), g.scroll, time); });
     if (SHOW_HIT && g.mode !== 'eaten') drawHitboxes();
     drawTexts();
     ctx.restore();
